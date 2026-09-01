@@ -1,0 +1,136 @@
+# =========================================================
+# FastAPI Learning Path — .gitignore
+# =========================================================
+# This file tells Git which files/folders to NEVER track.
+# Edit here to expand the ignore list as the repo grows.
+# =========================================================
+
+# ─────────────────────────────────────────────────────────
+# 🐍 Python
+# ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.ruff_cache/
+
+# Translations
+*.mo
+
+# mypy / type checker
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ─────────────────────────────────────────────────────────
+# 🧪 Virtual environments
+# ─────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ─────────────────────────────────────────────────────────
+# 💻 IDE / Editor
+# ─────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Jupyter
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ─────────────────────────────────────────────────────────
+# 📦 FastAPI / Uvicorn runtime
+# ─────────────────────────────────────────────────────────
+# Logs
+*.log
+logs/
+
+# Uvicorn / FastAPI local dev artifacts
+*.pid
+*.sock
+
+# ─────────────────────────────────────────────────────────
+# 🌐 Environment / secrets
+# ─────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+.envrc
+
+# ─────────────────────────────────────────────────────────
+# 🗄️ Databases / data files
+# ─────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+data/
+*.csv
+*.json.gz
+
+# ─────────────────────────────────────────────────────────
+# 🪟 Windows-specific
+# ─────────────────────────────────────────────────────────
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ─────────────────────────────────────────────────────────
+# 🐧 macOS / Linux
+# ─────────────────────────────────────────────────────────
+.fseventsd/
+.Spotlight-V100/
+.Trashes
+.directory
+
+# ─────────────────────────────────────────────────────────
+# 📄 Project-specific (override above if needed)
+# ─────────────────────────────────────────────────────────
+# Each module folder under A001..A00N should keep tracked:
+#   - main.py
+#   - README.md
+#   - requirements.txt (if present)
+# Anything else (caches, editor state) → ignored.
