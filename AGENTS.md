@@ -8,7 +8,7 @@
 ## Repository at a glance
 
 - **Type:** Personal FastAPI tutorial/lab. **Not** a deployable service, **no CI**, **no tests**, **no `pyproject.toml`**.
-- **Layout:** Eight self-contained module folders (`A001_CrashCourse/` … `A008_CRUD_API_TODO_App/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
+- **Layout:** Nine self-contained module folders (`A001_CrashCourse/` … `A009_Path_Query_Body_Together/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
 - **Stack:** Python 3.10+, FastAPI 0.141.x, Pydantic v2, Uvicorn. Only A001 has a pinned `requirements.txt`; the rest install via `pip install "fastapi[standard]"`.
 - **Branch:** `main` (default). No protection rules, no PR template.
 
@@ -44,7 +44,8 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 | A005 | `A005_Query_Parameters_Optional_Default_Value/main.py` | Query params: `/users`, `/products`, `/items`. |
 | A006 | `A006_Request_Body_POST_API_Pydantic_Explained/main.py` | POST `/create-user` with `User` Pydantic model. |
 | A007 | `A007_Pydanti_Models_Data_Validation_Nested_Schemas/main.py` | Nested `User → Address` model. |
-| A008 | `A008_CRUD_API_TODO_App/main.py` | TODO CRUD. **File is currently truncated** — see Gotchas. |
+| A008 | `A008_CRUD_API_TODO_App/main.py` | TODO CRUD (POST, GET-list, GET-by-id, PUT, DELETE). |
+| A009 | `A009_Path_Query_Body_Together/main.py` | `PUT /users/{user_id}` combining **path + body + query** inputs. |
 
 ---
 
@@ -60,24 +61,26 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 7 existing modules (A001–A007) have a deep, memory-friendly README using mnemonics and a "If you remember ONE thing" section. **Match this style** if you add or update one. A008 currently has no README.
+- **Per-folder `README.md`:** All 9 existing modules (A001–A009) have a deep, memory-friendly README using mnemonics and a "If you remember ONE thing" section. **Match this style** if you add or update one.
 - **Pinned versions:** A001 is the only folder with a `requirements.txt`. New modules can either omit it (use `fastapi[standard]`) or add one.
 
 ---
 
 ## Gotchas (worth preserving)
 
-1. **A008 `main.py` is incomplete.** The file currently ends mid-line at the `update_todo` handler (`@app.put("/todos/{todo_id}")\ndef update_todo(todo_id:int, )`). If the user asks to "run" or "fix" A008, expect a `SyntaxError` until the function body is finished. Don't silently rewrite the user's in-progress code — ask first.
+1. **A008 `main.py` is currently complete** (POST, GET-list, GET-by-id, PUT, DELETE all implemented). If the user reports it as broken, re-read the file before assuming it's truncated. Earlier versions *were* truncated; an edit since the original AGENTS.md was written restored the missing handlers.
 
 2. **A002 / A003 originally had `READNE.md` (typo).** They were renamed to `README.md`. If you see `READNE.md` referenced anywhere (e.g. in old commits or new untracked code), rename it — do not create a second one.
 
 3. **A003's `about` handlers share a name.** Both `/about` and `/users` route handlers are called `about` in the original code. This silently overwrites the first definition. The READMEs document this as a teaching moment. Don't "fix" it unless the user asks — it's intentional for the lesson.
 
-4. **In-memory storage everywhere.** All CRUD examples use a module-level Python list. Restarting the server wipes the data. Don't suggest adding SQLite/Postgres unless the user asks.
+4. **A009's update check is fragile.** The line `if user_id < len(users):` uses list length as if it were the max valid id. It breaks after deletes that leave gaps. The README documents this as a teaching moment. Don't "fix" it unless the user asks.
 
-5. **`.gitignore` is set up.** `__pycache__/`, `.venv/`, `.env`, IDE folders, etc. are all ignored. Don't add them as tracked files. Note: an earlier commit (before the `.gitignore` was added) still contains `__pycache__/` entries in history — that's fine, the working tree is clean.
+5. **In-memory storage everywhere.** All CRUD examples use a module-level Python list. Restarting the server wipes the data. Don't suggest adding SQLite/Postgres unless the user asks.
 
-6. **`uvicorn main:app --reload`** watches the **current directory's** `main.py`. If you `cd` to the repo root and run it, you'll get `ModuleNotFoundError`. Always `cd` into the module folder first.
+6. **`.gitignore` is set up.** `__pycache__/`, `.venv/`, `.env`, IDE folders, etc. are all ignored. Don't add them as tracked files.
+
+7. **`uvicorn main:app --reload`** watches the **current directory's** `main.py`. If you `cd` to the repo root and run it, you'll get `ModuleNotFoundError`. Always `cd` into the module folder first.
 
 ---
 
@@ -128,9 +131,9 @@ If the user asks for any of these, treat it as a *new feature*, not as something
 
 If you only have 30 seconds:
 
-- **8 independent FastAPI mini-projects** under `A001…A008/`.
+- **9 independent FastAPI mini-projects** under `A001…A009/`.
 - **One app per folder**, run with `uvicorn main:app --reload` from inside that folder.
 - **No tests, no CI, no linter, no build system** — just `pip install "fastapi[standard]"` and go.
 - **README style is mnemonic-heavy** — keep the style consistent.
-- **A008's `main.py` is unfinished** — don't try to "fix" without asking.
+- **A009's `user_id < len(users)` check is fragile** — don't try to "fix" without asking.
 - **`.gitignore` exists** — don't add `__pycache__/`, `.venv/`, or IDE files.
