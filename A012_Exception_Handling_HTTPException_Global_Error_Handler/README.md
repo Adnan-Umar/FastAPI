@@ -525,4 +525,128 @@ async def handler(request: Request, exc: UserNotFoundException):
 
 Made with ❤️, custom exceptions, and a 911 dispatcher called `@app.exception_handler`.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: Why use a global exception handler instead of `try/except` in every route?
+
+**Answer:** Centralization. One handler covers all routes that raise the same exception. Less duplication, consistent error shape, easier to change later.
+
+| `try/except` in every route | Global handler |
+|:---------------------------|:---------------|
+| Duplicated 10+ times | Defined once |
+| Inconsistent shapes | One shape |
+| Hard to refactor | One place to change |
+
+> **One-liner:** *"Centralize errors. Don't scatter try/except."*
+
+### Q2: How do you create a custom exception in Python?
+
+**Answer:** Subclass `Exception` (or a more specific base):
+
+```python
+class UserNotFoundException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+```
+
+Raise it like any other:
+
+```python
+raise UserNotFoundException("Adnan")
+```
+
+> **One-liner:** *"Subclass `Exception`; raise it like any other."*
+
+### Q3: How do you register a global exception handler?
+
+**Answer:** Use `@app.exception_handler(MyException)`:
+
+```python
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(UserNotFoundException)
+def handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"error": "user_not_found", "name": exc.name}
+    )
+```
+
+The handler runs whenever that exception is raised anywhere in the app.
+
+> **One-liner:** *"`@app.exception_handler(...)` registers the 911 dispatcher."*
+
+### Q4: What are the two parameters of an exception handler?
+
+**Answer:** `request` and `exc`:
+
+```python
+def handler(request: Request, exc: MyException):
+    # request: the incoming Request object
+    # exc: the raised exception instance
+    ...
+```
+
+> **One-liner:** *"Handler takes `request` and `exc`."*
+
+### Q5: How do you handle `ValueError` globally?
+
+**Answer:** Register a handler for it:
+
+```python
+@app.exception_handler(ValueError)
+def value_error_handler(request, exc):
+    return JSONResponse(400, {"error": "invalid_value", "detail": str(exc)})
+```
+
+Now any `raise ValueError(...)` inside any route returns a 400 with your shape.
+
+> **One-liner:** *"Register a handler for any built-in exception type."*
+
+### Q6: What's the difference between a custom exception and `HTTPException`?
+
+**Answer:**
+
+| `HTTPException` | Custom exception |
+|:----------------|:-----------------|
+| Built into FastAPI | You define it |
+| Carries `status_code` + `detail` | Carries whatever you put on it |
+| One shape (`{detail}`) | Any shape you design |
+| Inline definition | Centralized handler |
+| Use for one-offs | Use for repeated patterns |
+
+> **One-liner:** *"HTTPException for one-offs. Custom for patterns."*
+
+### Q7: How do you override FastAPI's built-in 422 handler?
+
+**Answer:** Use `RequestValidationError`:
+
+```python
+from fastapi.exceptions import RequestValidationError
+
+@app.exception_handler(RequestValidationError)
+async def custom_422(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={"error": "validation", "fields": exc.errors()}
+    )
+```
+
+> **One-liner:** *"Override 422 with `RequestValidationError`."*
+
+### Q8: Is catching `Exception` (catch-all) a good idea?
+
+**Answer:** **Use with care.** Catching `Exception` swallows programmer bugs (KeyError, AttributeError) and masks problems. Use it as a **last-resort safety net** that logs the error and returns a generic 500.
+
+```python
+@app.exception_handler(Exception)
+def last_resort(request, exc):
+    logger.error(f"Unhandled: {exc}", exc_info=True)
+    return JSONResponse(500, {"error": "internal"})
+```
+
+> **One-liner:** *"Catch-all = last resort, with logging."*
+
 </div>

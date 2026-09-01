@@ -583,4 +583,140 @@ def update_user(
 
 Made with ❤️ and an envelope, a sticky note, and a letter.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: An HTTP request can carry data in three places. What are they?
+
+**Answer:**
+
+| Place | In code | Example |
+|:------|:--------|:--------|
+| 🛣️ **Path** | `{name}` in route | `/users/42` |
+| 🔍 **Query** | Parameter after the route | `?notify=true` |
+| 📨 **Body** | Pydantic model parameter | JSON payload |
+
+> **One-liner:** *"Path = identity, Query = filter, Body = payload."*
+
+### Q2: How does FastAPI decide if a function parameter is path, query, or body?
+
+**Answer:** Three-step decision:
+
+1. If the name appears in the route's `{...}` → **path**
+2. If the type is a Pydantic `BaseModel` → **body**
+3. Otherwise → **query**
+
+```python
+@app.put("/users/{user_id}")
+def update(user_id: int, user: User, notify: bool = False):
+    #         ^path         ^body      ^query
+    ...
+```
+
+> **One-liner:** *"Path-in-string → Pydantic-model → else = query."*
+
+### Q3: What's the correct order of parameters in a function signature?
+
+**Answer:** Convention (not enforced) is:
+
+```python
+def endpoint(
+    path_params...,     # 1. path
+    body: Model,        # 2. body
+    query_params...     # 3. query
+):
+    ...
+```
+
+It works in any order, but readers expect this layout.
+
+> **One-liner:** *"Convention: path → body → query."*
+
+### Q4: How do you read the request body AND path/query in one endpoint?
+
+**Answer:** Combine them in the signature:
+
+```python
+class User(BaseModel):
+    name: str
+    age: int
+
+@app.put("/users/{user_id}")
+def update_user(
+    user_id: int,         # path
+    user: User,           # body
+    notify: bool = False  # query
+):
+    ...
+```
+
+> **One-liner:** *"Path + body model + query default = full signature."*
+
+### Q5: What's wrong with the `if user_id < len(users):` check?
+
+**Answer:** It conflates **list position** with **id**. After deletes, the list can have gaps, and a valid id may be at a position greater than the list length.
+
+```python
+# users = [A, B, C] → delete B → users = [A, C]
+# PUT /users/2 → 2 < 2 is False → "User not found"  ← WRONG, C exists at idx 1
+```
+
+The correct pattern is to **search by id field**, not by list index.
+
+> **One-liner:** *"Length != max id. Search by id, not by index."*
+
+### Q6: How do you make PUT idempotent?
+
+**Answer:** PUT is idempotent by design — *replacing* a resource with the same data yields the same state. The bug is in the *implementation*: side effects inside the function (like logging or notifications) can break idempotency.
+
+```python
+@app.put("/users/{user_id}")
+def update_user(user_id: int, user: User, notify: bool = False):
+    # ✅ pure replace — idempotent
+    # ❌ if you send an email here, it's not idempotent
+    ...
+```
+
+> **One-liner:** *"PUT must be pure replace. Side effects break idempotency."*
+
+### Q7: How do you make a query param required but with a default-like value?
+
+**Answer:** Use `Query(...)` without a default:
+
+```python
+from fastapi import Query
+
+@app.put("/users/{user_id}")
+def update_user(
+    user_id: int,
+    user: User,
+    notify: bool = Query(...)    # required
+):
+    ...
+```
+
+The `...` (Ellipsis) means "no default — must be supplied".
+
+> **One-liner:** *"`Query(...)` makes a query param explicitly required."*
+
+### Q8: How would you test this endpoint?
+
+**Answer:** With `curl`, `httpx`, or `TestClient`:
+
+```bash
+curl -X PUT "http://127.0.0.1:8000/users/0?notify=true" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Md","age":30}'
+```
+
+```python
+from fastapi.testclient import TestClient
+client = TestClient(app)
+r = client.put("/users/0?notify=true", json={"name": "Md", "age": 30})
+assert r.status_code == 200
+```
+
+> **One-liner:** *"Use curl or `TestClient` to test combined inputs."*
+
 </div>

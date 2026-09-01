@@ -477,4 +477,86 @@ Close this README. On a blank page, answer:
 
 Made with ❤️, ☕, and well-typed Python.
 
+---
+
+## 🎯 Interview Q&A
+
+> Real questions an interviewer might ask about this module. Practice out loud.
+
+### Q1: What is FastAPI and why would you choose it over Flask or Django?
+
+**Answer:** FastAPI is a modern, high-performance web framework for building APIs with Python 3.10+ based on standard type hints.
+
+| Aspect | FastAPI | Flask | Django |
+|:-------|:--------|:------|:-------|
+| **Speed** | Very fast (ASGI) | Slower (WSGI) | Slower (full-stack) |
+| **Validation** | Built-in via Pydantic | Manual | Forms/serializers |
+| **Docs** | Auto Swagger/ReDoc | Manual | DRF has some |
+| **Async** | Native | Via extensions | ASGI mode |
+| **Type safety** | Type-hint-driven | Optional | Optional |
+
+> **One-liner:** *"FastAPI gives you Flask's simplicity with Django-level structure and Node-level speed — using only type hints."*
+
+### Q2: What is a Pydantic model and what does `BaseModel` do?
+
+**Answer:** A Pydantic model is a Python class that inherits from `BaseModel` with type-annotated fields. It acts as a **runtime contract** that validates input, coerces types (`"42"` → `42`), generates JSON Schema, and serializes to JSON.
+
+> **One-liner:** *"`BaseModel` turns a Python class into a runtime data contract."*
+
+### Q3: What's the difference between HTTP `POST` and `PUT`?
+
+**Answer:**
+
+| Verb | CRUD | Idempotent? | Use |
+|:-----|:-----|:------------|:----|
+| `POST` | Create | ❌ No | "Add a new tea" |
+| `PUT` | Replace | ✅ Yes | "Replace tea #1" |
+
+> **One-liner:** *"POST creates, PUT replaces. PUT is idempotent; POST is not."*
+
+### Q4: What does `uvicorn main:app --reload` do?
+
+**Answer:** Starts the Uvicorn ASGI server, loading the `app` object from `main.py`. The `--reload` flag watches for file changes and auto-restarts. **Dev only — never in production.**
+
+> **One-liner:** *"Run the dev server with hot-reload — saves you from manual restarts."*
+
+### Q5: What status code does FastAPI return for invalid input, and where does validation happen?
+
+**Answer:** **`422 Unprocessable Entity`**. Validation happens **before** your function runs:
+
+```
+Request → Pydantic parses → type check → ✅ call function
+                                  ↓
+                              ❌ → 422 + {detail:[{type, loc, msg, input}]}
+```
+
+> **One-liner:** *"Bad input gets a 422, your function never runs."*
+
+### Q6: How would you make this app's storage survive server restarts?
+
+**Answer:** Replace `teas: List[Tea] = []` with a real database:
+
+| Storage | Best for |
+|:--------|:---------|
+| SQLite | Tutorials, small apps |
+| PostgreSQL | Production |
+| Redis | Caching, sessions |
+| MongoDB | Document-shaped data |
+
+Use **SQLAlchemy** (sync) or **SQLModel** (async, Pydantic-based).
+
+> **One-liner:** *"Trade the in-memory list for SQLite/Postgres via SQLAlchemy."*
+
+### Q7: What are the four HTTP "CRUD" verbs and which is idempotent?
+
+**Answer:** Create (POST), Read (GET), Update (PUT), Delete (DELETE). **GET, PUT, and DELETE are idempotent.** **POST is not** — each call creates a new resource.
+
+> **One-liner:** *"Of the four CRUD verbs, only POST is non-idempotent."*
+
+### Q8: Explain the role of `status_code=201` on a POST endpoint.
+
+**Answer:** Convention says `POST` that creates a resource returns **`201 Created`** instead of `200 OK`. Use `status_code=status.HTTP_201_CREATED` to signal a new resource exists.
+
+> **One-liner:** *"`201 Created` says 'something new exists now'."*
+
 </div>

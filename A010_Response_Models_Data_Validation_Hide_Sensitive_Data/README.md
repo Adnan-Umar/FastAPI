@@ -512,4 +512,132 @@ def get_user():
 
 Made with ❤️ and a guest list called `UserResponse`.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What does `response_model` do, and why is it important?
+
+**Answer:** `response_model=PydanticClass` tells FastAPI to:
+
+1. ✅ Validate the function's return value against the model
+2. ✅ **Filter out fields not in the model** (the security win)
+3. ✅ Document the response schema in `/docs`
+
+It's a **whitelist** — fields absent from the model are stripped.
+
+> **One-liner:** *"`response_model` is a bouncer at the response door."*
+
+### Q2: How would you hide `password` from the API response?
+
+**Answer:** Define a separate "safe" model and use it as `response_model`:
+
+```python
+class User(BaseModel):
+    name: str
+    age: int
+    password: str     # internal only
+
+class UserResponse(BaseModel):
+    name: str
+    age: int          # exposed
+
+@app.get("/user", response_model=UserResponse)
+def get_user():
+    return {"name": "A", "age": 21, "password": "secret"}  # password stripped
+```
+
+> **One-liner:** *"Two models: internal (full) vs external (filtered)."*
+
+### Q3: What happens if the function's return doesn't match the response_model?
+
+**Answer:** FastAPI raises a `ResponseValidationError` and returns **`500 Internal Server Error`**. This is **defensive** — it catches programmer mistakes early.
+
+```python
+class UserResponse(BaseModel):
+    name: str
+    email: str   # required
+
+@app.get("/user", response_model=UserResponse)
+def get_user():
+    return {"name": "A"}    # no email → 500
+```
+
+> **One-liner:** *"500 = response didn't match the model (your fault)."*
+
+### Q4: How do you hide fields with `None` values from the response?
+
+**Answer:** Use `response_model_exclude_none=True`:
+
+```python
+class UserResponse(BaseModel):
+    name: str
+    email: str | None = None
+
+@app.get("/user", response_model=UserResponse, response_model_exclude_none=True)
+def get_user():
+    return {"name": "A", "email": None}
+# Response: {"name": "A"}  ← email hidden
+```
+
+> **One-liner:** *"`response_model_exclude_none=True` strips nulls."*
+
+### Q5: What's the difference between `response_model_include` and `response_model_exclude`?
+
+**Answer:**
+
+| Argument | Effect |
+|:---------|:-------|
+| `response_model_include={"name", "age"}` | Only these fields pass |
+| `response_model_exclude={"password"}` | All fields except this one |
+
+```python
+@app.get("/user", response_model=User, response_model_exclude={"password"})
+def get_user(): ...
+```
+
+> **One-liner:** *"Include = whitelist. Exclude = blacklist."*
+
+### Q6: Why is `response_model` better than manual filtering?
+
+**Answer:**
+
+| Manual `del data["password"]` | `response_model` |
+|:-------------------------------|:-----------------|
+| Easy to forget | Automatic |
+| Not documented | Documented in `/docs` |
+| Doesn't catch missing fields | Validates the response |
+| Per-endpoint code | DRY |
+
+> **One-liner:** *"Automatic beats manual — always."*
+
+### Q7: How do you return different shapes for different roles (admin vs public)?
+
+**Answer:** Define two response models and use them in different endpoints:
+
+```python
+class UserPublic(BaseModel):
+    name: str
+    age: int
+
+class UserAdmin(BaseModel):
+    name: str
+    age: int
+    password: str
+
+@app.get("/user", response_model=UserPublic)
+def public_user(): ...
+
+@app.get("/admin/user", response_model=UserAdmin)
+def admin_user(): ...
+```
+
+> **One-liner:** *"Per-endpoint model = per-audience shape."*
+
+### Q8: Does `response_model` work with async functions and streaming responses?
+
+**Answer:** Mostly yes — `response_model` validates the return value before serialization. For streaming (`StreamingResponse`), you can't use `response_model` because FastAPI doesn't know the final shape. Use `response_class=StreamingResponse` instead.
+
+> **One-liner:** *"`response_model` works for normal returns, not for streams."*
+
 </div>

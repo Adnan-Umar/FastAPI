@@ -313,4 +313,103 @@ def read_user(user_id: int):
 
 Made with ❤️ for FastAPI learners.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is a "route" in FastAPI?
+
+**Answer:** A route is a `(URL path, HTTP method)` pair bound to one Python function via a decorator:
+
+```python
+@app.get("/users/{user_id}")   # route = (GET, /users/{user_id})
+def get_user(user_id: int): ...
+```
+
+> **One-liner:** *"Route = URL + HTTP verb + handler."*
+
+### Q2: Why does A003 have two functions both named `about`?
+
+**Answer:** This is a **bug in the demo**. The second `def about()` *silently overwrites* the first. The endpoint `/about` still works (uses the latest `about`), but `/users` is served by the wrong function. The lesson: **always give handler functions unique names.**
+
+> **One-liner:** *"Duplicate function names silently overwrite — use unique names."*
+
+### Q3: Explain HTTP verb semantics.
+
+**Answer:**
+
+| Verb | CRUD | Idempotent | Use |
+|:-----|:-----|:------------|:----|
+| `GET` | Read | ✅ | Read data |
+| `POST` | Create | ❌ | Create new |
+| `PUT` | Replace | ✅ | Replace existing |
+| `PATCH` | Partial update | ❌ typically | Update some fields |
+| `DELETE` | Remove | ✅ | Delete resource |
+
+> **One-liner:** *"GET/POST/PUT/PATCH/DELETE — read, create, replace, partial-update, remove."*
+
+### Q4: What status code does each verb return by default?
+
+**Answer:** FastAPI defaults to **`200 OK`** for everything that doesn't raise. Conventions:
+
+| Verb | Convention |
+|:-----|:-----------|
+| `GET` | 200 (or 404 if missing) |
+| `POST` | 201 Created |
+| `PUT` / `PATCH` | 200 OK |
+| `DELETE` | 204 No Content (or 200) |
+
+> **One-liner:** *"Default is 200. POST should be 201; DELETE often 204."*
+
+### Q5: What's the difference between `/about` and `/about/`?
+
+**Answer:** FastAPI's default routing is **strict on trailing slashes**:
+
+```python
+@app.get("/about")     # matches /about only
+@app.get("/about/")    # matches /about/ only
+```
+
+The `/docs` page shows exactly which one is registered.
+
+> **One-liner:** *"`/about` ≠ `/about/`. FastAPI is strict by default."*
+
+### Q6: How do you handle multiple GET routes in one file?
+
+**Answer:** Just stack decorators. Each `@app.get("/path")` registers a route independently. FastAPI's router matches the first one that fits the URL pattern.
+
+> **One-liner:** *"Stack decorators — FastAPI matches the right one."*
+
+### Q7: What's the order of route registration, and does it matter?
+
+**Answer:** **Yes, it matters when patterns overlap.** Static routes must be registered **before** catch-all dynamic ones:
+
+```python
+@app.get("/users/me")        # ← static first
+@app.get("/users/{user_id}") # ← dynamic second
+```
+
+Otherwise `/users/me` would be captured by `{user_id}`.
+
+> **One-liner:** *"Specific before general — like emergency numbers before auto-attendant."*
+
+### Q8: When should you split routes into separate files?
+
+**Answer:** When you have more than ~10 routes, or when you want logical grouping. FastAPI uses `APIRouter` for this:
+
+```python
+# users.py
+from fastapi import APIRouter
+router = APIRouter(prefix="/users")
+
+@router.get("/")
+def list_users(): ...
+
+# main.py
+from users import router
+app.include_router(router)
+```
+
+> **One-liner:** *"Use `APIRouter` once you outgrow a single file."*
+
 </div>

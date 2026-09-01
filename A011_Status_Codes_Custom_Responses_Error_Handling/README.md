@@ -577,4 +577,129 @@ def get_user(user_id: int):
 
 Made with ❤️, 201s, and the occasional 404.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What are the five categories of HTTP status codes?
+
+**Answer:**
+
+| Range | Category | Mnemonic | Meaning |
+|:------|:---------|:---------|:--------|
+| `1xx` | Informational | **T**ell me more | Server is mid-thought |
+| `2xx` | Success | **S**uccess! | It worked |
+| `3xx` | Redirection | **R**edirect | Look over there |
+| `4xx` | Client error | **C**lient's fault | You messed up |
+| `5xx` | Server error | **S**erver's fault | I messed up |
+
+> **One-liner:** *"T-S-R-C-S: Tell, Success, Redirect, Client, Server."*
+
+### Q2: What status code should each CRUD verb return?
+
+**Answer:**
+
+| Verb | Convention | Reason |
+|:-----|:-----------|:-------|
+| `GET` | `200 OK` | Read succeeded |
+| `POST` | `201 Created` | New resource |
+| `PUT` | `200 OK` | Replace succeeded |
+| `PATCH` | `200 OK` | Partial update |
+| `DELETE` | `204 No Content` | No body to return |
+
+> **One-liner:** *"POST → 201, DELETE → 204, the rest → 200."*
+
+### Q3: How do you raise an HTTP error from a FastAPI route?
+
+**Answer:** Use `HTTPException`:
+
+```python
+from fastapi import HTTPException, status
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    if user_id not in users:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    ...
+```
+
+FastAPI converts the exception to a JSON response with the right status code.
+
+> **One-liner:** *"`raise HTTPException(status, detail)` = error response."*
+
+### Q4: How do you customize the 422 validation error response?
+
+**Answer:** Override the default exception handler:
+
+```python
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(RequestValidationError)
+async def custom_422(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={"error": "validation_failed", "fields": exc.errors()}
+    )
+```
+
+> **One-liner:** *"`@app.exception_handler(RequestValidationError)` overrides 422."*
+
+### Q5: What's the difference between `return` and `raise HTTPException`?
+
+**Answer:**
+
+| `return` | `raise HTTPException` |
+|:---------|:----------------------|
+| Sends success response (default 200) | Sends error response with chosen code |
+| Function ends normally | Function aborts mid-execution |
+| Body is the returned data | Body is `{detail: ...}` |
+
+> **One-liner:** *"Return = success path. Raise = error path."*
+
+### Q6: Why is returning 200 with `{error: ...}` in the body a bad pattern?
+
+**Answer:** Browsers, CDNs, monitoring, and clients all use the **status code** to react. A 200 with an error body bypasses all that — clients think the request succeeded even though it failed.
+
+```python
+# ❌ Bad
+return {"error": "user not found"}    # 200 OK, error in body
+
+# ✅ Good
+raise HTTPException(404, "user not found")    # 404 status
+```
+
+> **One-liner:** *"200 with error body = lie about success."*
+
+### Q7: How do you add a custom header to a response?
+
+**Answer:** Inject `Response` and modify headers:
+
+```python
+from fastapi import Response
+
+@app.post("/create", status_code=201)
+def create(response: Response):
+    response.headers["Location"] = "/resource/123"
+    return {"id": 123}
+```
+
+Or use `HTTPException(..., headers={...})` for errors.
+
+> **One-liner:** *"Inject `Response` or use `HTTPException(headers=...)`."*
+
+### Q8: What status code means "I refused because you're not authenticated"?
+
+**Answer:** **`401 Unauthorized`** (despite the name, it really means "unauthenticated"). `403 Forbidden` is "authenticated but not allowed".
+
+| Code | Meaning |
+|:-----|:--------|
+| `401` | Not authenticated — supply credentials |
+| `403` | Authenticated — but not allowed |
+
+> **One-liner:** *"401 = who are you? 403 = I know you, but no."*
+
 </div>

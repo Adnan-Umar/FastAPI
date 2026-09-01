@@ -298,4 +298,101 @@ Close the README. On a blank page:
 
 Made with ❤️ and only 7 lines of code.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What three lines of code are mandatory in any FastAPI app?
+
+**Answer:**
+```python
+from fastapi import FastAPI  # 1. import
+app = FastAPI()             # 2. app instance
+@app.get("/")               # 3. decorator + function
+def home(): ...
+```
+
+> **One-liner:** *"Three things: app, decorator, function."*
+
+### Q2: What is an ASGI server and why does FastAPI use one?
+
+**Answer:** ASGI = **Asynchronous Server Gateway Interface** — the spiritual successor to WSGI. It supports `async`/`await`, WebSockets, and HTTP/2. Uvicorn is the most common ASGI server for FastAPI.
+
+| Interface | Async? | Used by |
+|:----------|:-------|:--------|
+| WSGI | ❌ | Flask, Django (classic) |
+| ASGI | ✅ | FastAPI, Django (modern) |
+
+> **One-liner:** *"ASGI = WSGI + async + WebSockets. FastAPI runs on it."*
+
+### Q3: Why does returning a `dict` produce JSON automatically?
+
+**Answer:** FastAPI inherits Starlette's response handling. When you return a `dict`, Starlette's `JSONResponse` kicks in:
+
+```
+return {...} → dict → JSONResponse → Content-Type: application/json
+```
+
+You didn't set headers manually; the framework did.
+
+> **One-liner:** *"The framework is the waiter; you just cook."*
+
+### Q4: What's the difference between `def` and `async def` in a route?
+
+**Answer:**
+
+| Declaration | When |
+|:------------|:-----|
+| `def` | Sync work, no I/O wait (most routes) |
+| `async def` | Real I/O — DB queries, HTTP calls, file reads |
+
+FastAPI runs both correctly. Use `async def` only if you're calling `await`-able libraries.
+
+> **One-liner:** *"Use `def` for CPU work, `async def` for I/O work."*
+
+### Q5: How do you fix `Address already in use`?
+
+**Answer:** Another process is bound to port 8000. Solutions:
+
+```powershell
+# Pick a different port
+uvicorn main:app --port 8001
+
+# Or kill the old process
+Get-Process -Id (Get-NetTCPConnection -LocalPort 8000).OwningProcess | Stop-Process
+```
+
+> **One-liner:** *"Switch ports or kill the other process."*
+
+### Q6: What does `--reload` do, and why is it dev-only?
+
+**Answer:** `--reload` makes Uvicorn watch the file system and restart on save. In production, you want a stable, predictable server process — never `--reload`. Use **Gunicorn + Uvicorn workers** in production.
+
+> **One-liner:** *"`--reload` is for dev. Gunicorn is for prod."*
+
+### Q7: What's the URL of the auto-generated docs?
+
+**Answer:**
+
+| URL | What you see |
+|:----|:-------------|
+| <http://127.0.0.1:8000/docs> | 🎨 **Swagger UI** (interactive) |
+| <http://127.0.0.1:8000/redoc> | 📘 **ReDoc** (reference) |
+| <http://127.0.0.1:8000/openapi.json> | Raw OpenAPI 3.1 schema |
+
+> **One-liner:** *"`/docs` = Swagger UI; `/redoc` = ReDoc."*
+
+### Q8: How is `FastAPI()` different from `Flask(__name__)`?
+
+**Answer:**
+
+| `Flask(__name__)` | `FastAPI()` |
+|:------------------|:------------|
+| Needs app name for templates/static | No name needed |
+| Decorators register routes | Same, but with type-hint power |
+| No built-in validation | Pydantic-driven |
+| No auto docs | Swagger + ReDoc |
+
+> **One-liner:** *"FastAPI's app constructor is simpler and unlocks type-driven magic."*
+
 </div>

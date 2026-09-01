@@ -529,4 +529,137 @@ def create_user(user: User):
 
 Made with ❤️ and a stamp called Pydantic.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is a request body and how is it different from query parameters?
+
+**Answer:**
+
+| Request body | Query parameter |
+|:-------------|:----------------|
+| In the HTTP packet body | In the URL after `?` |
+| JSON (or other formats) | key=value strings |
+| Used for create/update | Used for filters |
+| Sends complex/nested data | Limited to flat strings |
+
+> **One-liner:** *"Body = JSON payload. Query = URL filters."*
+
+### Q2: How do you accept JSON in a FastAPI endpoint?
+
+**Answer:** Declare a **Pydantic model** as a function parameter:
+
+```python
+class User(BaseModel):
+    name: str
+    age: int
+
+@app.post("/create-user")
+def create_user(user: User): ...
+```
+
+FastAPI:
+
+1. Parses the JSON body
+2. Validates against `User`
+3. Constructs a `User` instance
+4. Calls your function
+
+> **One-liner:** *"Type-hint with a Pydantic class. FastAPI does the rest."*
+
+### Q3: What status code does FastAPI return for an invalid JSON body?
+
+**Answer:** **`422 Unprocessable Entity`** with details:
+
+```json
+{
+  "detail": [{
+    "type": "int_parsing",
+    "loc": ["body", "age"],
+    "msg": "Input should be a valid integer...",
+    "input": "twenty-five"
+  }]
+}
+```
+
+> **One-liner:** *"422 for invalid bodies, with the field path in `loc`."*
+
+### Q4: Why use a Pydantic model instead of a raw `dict`?
+
+**Answer:**
+
+| Raw `dict` | Pydantic model |
+|:-----------|:---------------|
+| No type safety | Type-checked at runtime |
+| No validation | Auto-validates |
+| No docs | Auto JSON Schema |
+| Manual serialization | `.model_dump()` / `.model_dump_json()` |
+
+> **One-liner:** *"Model wins, dict sins."*
+
+### Q5: How do you make a Pydantic field optional?
+
+**Answer:** Use `Optional[T] = None` or `T | None = None`:
+
+```python
+from typing import Optional
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    email: Optional[str] = None
+```
+
+> **One-liner:** *"`Optional[T] = None` makes a field skippable."*
+
+### Q6: How do you add constraints like min/max length or regex?
+
+**Answer:** Use `Field()`:
+
+```python
+from pydantic import BaseModel, Field
+
+class User(BaseModel):
+    name: str = Field(..., min_length=2, max_length=50)
+    age: int = Field(..., ge=0, le=120)
+```
+
+| Argument | Meaning |
+|:---------|:--------|
+| `min_length`, `max_length` | String length |
+| `ge`, `le` | Number range (inclusive) |
+| `gt`, `lt` | Number range (exclusive) |
+| `pattern` | Regex pattern |
+| `description` | Shown in `/docs` |
+
+> **One-liner:** *"`Field(...)` adds per-field validation rules."*
+
+### Q7: How do you convert a Pydantic model to a dict or JSON string?
+
+**Answer:** Use the v2 methods:
+
+```python
+user = User(name="Adnan", age=25)
+
+user.model_dump()         # → {'name': 'Adnan', 'age': 25}
+user.model_dump_json()    # → '{"name":"Adnan","age":25}'
+```
+
+> **One-liner:** *"`.model_dump()` = Python dict; `.model_dump_json()` = string."*
+
+### Q8: Why is POST supposed to return 201 Created, not 200?
+
+**Answer:** **HTTP convention.** `201 Created` signals that the request resulted in a new resource being created. `200 OK` is the generic "success" code. Returning the correct semantic code helps clients, CDNs, and monitoring tools understand what happened.
+
+```python
+from fastapi import status
+
+@app.post("/create-user", status_code=status.HTTP_201_CREATED)
+def create_user(user: User): ...
+```
+
+> **One-liner:** *"POST creates → 201 Created, not 200 OK."*
+
 </div>

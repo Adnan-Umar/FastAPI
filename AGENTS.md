@@ -65,7 +65,10 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 13 existing modules (A001–A013) have a deep, memory-friendly README using mnemonics and a "If you remember ONE thing" section. **Match this style** if you add or update one.
+- **Per-folder `README.md`:** All 13 existing modules (A001–A013) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
+- **Interview Q&A convention:** Every module README ends with an `## 🎯 Interview Q&A` section containing **8 questions** (one per common interview topic for that module). Each answer follows the pattern: short prose answer + comparison table where useful + a "One-liner" summary. If you add a new module, write 8 Q&A items in the same style.
+- **Diagrams:** ASCII art and Mermaid diagrams are encouraged wherever a flow, hierarchy, or sequence helps comprehension. They are first-class content, not decoration.
+- **Theory depth:** READMEs must be **deeply detailed** — cover minor topics, edge cases, and gotchas in full, not just the happy path. The user values thoroughness over brevity. Add comparison tables, error/edge-case examples, and "what's happening under the hood" walkthroughs wherever they apply. Don't summarize when you can explain.
 - **Pinned versions:** A001 is the only folder with a `requirements.txt`. New modules can either omit it (use `fastapi[standard]`) or add one.
 
 ---

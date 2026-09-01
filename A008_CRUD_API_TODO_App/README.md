@@ -597,4 +597,142 @@ Now FastAPI:
 
 Made with ❤️ and a chalkboard that survives server restarts (in production, with a database).
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: How do you map CRUD operations to HTTP verbs?
+
+**Answer:**
+
+| CRUD | Verb | Endpoint pattern |
+|:-----|:-----|:-----------------|
+| **C**reate | `POST` | `/resource` (with body) |
+| **R**ead (all) | `GET` | `/resource` |
+| **R**ead (one) | `GET` | `/resource/{id}` |
+| **U**pdate | `PUT` | `/resource/{id}` (with body) |
+| **D**elete | `DELETE` | `/resource/{id}` |
+
+> **One-liner:** *"CRUD ↔ POST/GET/PUT/DELETE."*
+
+### Q2: How would you add pagination to the GET endpoint?
+
+**Answer:** Use **query parameters**:
+
+```python
+@app.get("/todos")
+def get_todos(skip: int = 0, limit: int = 10):
+    return todos[skip : skip + limit]
+```
+
+```bash
+GET /todos?skip=20&limit=10
+```
+
+> **One-liner:** *"`?skip=N&limit=M` paginates a list."*
+
+### Q3: How do you handle "Todo not found" properly?
+
+**Answer:** Raise `HTTPException` instead of returning a dict:
+
+```python
+from fastapi import HTTPException
+
+@app.get("/todos/{todo_id}")
+def get_todo(todo_id: int):
+    for todo in todos:
+        if todo.id == todo_id:
+            return todo
+    raise HTTPException(status_code=404, detail="Todo not found")
+```
+
+This returns proper status `404`, not `200 + {error: ...}`.
+
+> **One-liner:** *"Raise `HTTPException(404, ...)` for missing resources."*
+
+### Q4: Why does `POST` return 201 and not 200 in production?
+
+**Answer:** Convention. `201 Created` semantically signals that a new resource was created. Browsers, CDNs, and clients use the status code to react.
+
+```python
+from fastapi import status
+
+@app.post("/todos", status_code=status.HTTP_201_CREATED)
+def create_todo(todo: Todo): ...
+```
+
+> **One-liner:** *"POST creates → 201 Created."*
+
+### Q5: What's the difference between `PUT` and `PATCH`?
+
+**Answer:**
+
+| `PUT` | `PATCH` |
+|:------|:--------|
+| Replaces the whole resource | Updates only the fields you send |
+| Body must contain all fields | Body contains only changed fields |
+| Idempotent | Idempotent in semantics, but depends on impl |
+
+```python
+# PUT
+@app.put("/todos/{todo_id}")
+def update(todo_id: int, todo: Todo): ...    # full replacement
+
+# PATCH
+@app.patch("/todos/{todo_id}")
+def patch(todo_id: int, changes: TodoUpdate): ...   # partial
+```
+
+> **One-liner:** *"PUT replaces; PATCH edits."*
+
+### Q6: How do you make the in-memory list thread-safe?
+
+**Answer:** Use a `threading.Lock` or replace the list with a proper DB:
+
+```python
+import threading
+lock = threading.Lock()
+
+@app.post("/todos")
+def create_todo(todo: Todo):
+    with lock:
+        todos.append(todo)
+    return todo
+```
+
+For real concurrency, use a database (Postgres, SQLite with WAL mode).
+
+> **One-liner:** *"Use a `Lock` for in-memory, or move to a DB."*
+
+### Q7: How do you prevent duplicate IDs?
+
+**Answer:** Check before appending:
+
+```python
+@app.post("/todos", status_code=201)
+def create_todo(todo: Todo):
+    if any(t.id == todo.id for t in todos):
+        raise HTTPException(409, "ID already exists")
+    todos.append(todo)
+    return todo
+```
+
+`409 Conflict` is the correct status for duplicate keys.
+
+> **One-liner:** *"Check first, raise 409 Conflict on duplicate."*
+
+### Q8: What's `response_model` and why use it on GET?
+
+**Answer:** `response_model=Todo` tells FastAPI:
+- Validate the response matches `Todo`
+- Filter out extra fields
+- Document the response schema in `/docs`
+
+```python
+@app.get("/todos", response_model=list[Todo])
+def get_todos(): return todos
+```
+
+> **One-liner:** *"`response_model` = input filter + output guard."*
+
 </div>

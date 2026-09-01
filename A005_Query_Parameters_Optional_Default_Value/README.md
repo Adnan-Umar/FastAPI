@@ -405,4 +405,144 @@ GET /search?tags=tea&tags=coffee
 
 Made with ❤️ for FastAPI learners.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is a query parameter?
+
+**Answer:** A **key=value** pair that appears in the URL after `?`, separated by `&`. They are typically used for filtering, sorting, pagination, and search.
+
+```
+https://example.com/search?q=tea&limit=10
+                       │         │
+                       path      query
+```
+
+> **One-liner:** *"After the `?` = filter menu."*
+
+### Q2: How does FastAPI know a function parameter is a query parameter?
+
+**Answer:** **By elimination.** If a parameter:
+
+1. Does NOT appear in the route path's `{}` slots → it's a query param
+2. IS a Pydantic model → it's a body param
+3. Matches `{name}` in the path → it's a path param
+
+```python
+@app.get("/items")
+def list(limit: int = 10): ...    # limit → query (default 10)
+```
+
+> **One-liner:** *"Not in path + not a model = query."*
+
+### Q3: How do you make a query parameter required?
+
+**Answer:** **No default value.**
+
+```python
+@app.get("/search")
+def search(q: str): ...          # required
+def search(q: str = ""): ...     # optional
+def search(q: str | None = None):  # optional, None default
+```
+
+Or use `Query(...)` for explicit metadata:
+
+```python
+from fastapi import Query
+
+def search(q: str = Query(..., min_length=2)): ...   # required
+```
+
+> **One-liner:** *"No default = required. `Query(...)` is explicit."*
+
+### Q4: How do you accept multiple values for one query key?
+
+**Answer:** Use a `List` type:
+
+```python
+from typing import List
+from fastapi import Query
+
+@app.get("/filter")
+def filter_tags(tags: List[str] = Query([])):
+    return tags
+```
+
+```bash
+GET /filter?tags=tea&tags=coffee&tags=chai
+# → ["tea", "coffee", "chai"]
+```
+
+> **One-liner:** *"`List[T] = Query([])` accepts multiple values."*
+
+### Q5: What's the difference between path and query parameters in code?
+
+**Answer:**
+
+| Path | Query |
+|:-----|:------|
+| In the URL path | After `?` |
+| Captured automatically | Declared as parameter |
+| Required by default | Optional by default |
+| Identifies a resource | Modifies the response |
+
+In code:
+
+```python
+@app.get("/users/{user_id}/orders")
+def get_orders(user_id: int, status: str = "pending"): ...
+#              ^path             ^path  ^query
+```
+
+> **One-liner:** *"Path identifies, query filters."*
+
+### Q6: How do you add metadata to a query parameter?
+
+**Answer:** Use `Query()`:
+
+```python
+from fastapi import Query
+
+@app.get("/users")
+def get_users(
+    role: str = Query(..., min_length=2, max_length=20, description="User role"),
+    active: bool = True
+):
+    ...
+```
+
+This shows up in `/docs` and adds validation rules.
+
+> **One-liner:** *"`Query(...)` adds metadata + validation."*
+
+### Q7: How do you type a query param that accepts any string?
+
+**Answer:** Just use `str`. To accept anything (string-coercible), use `str` with no constraints. For numeric, use `int` / `float`. For booleans, FastAPI parses `"true"`, `"false"`, `"1"`, `"0"`.
+
+> **One-liner:** *"Type the param. FastAPI parses it."*
+
+### Q8: Can query parameters have nested or complex types?
+
+**Answer:** Yes — use a Pydantic model via `Depends()`:
+
+```python
+from fastapi import Depends
+from pydantic import BaseModel
+
+class Filter(BaseModel):
+    skip: int = 0
+    limit: int = 10
+    sort: str | None = None
+
+@app.get("/items")
+def list_items(filter: Filter = Depends()):
+    return filter
+```
+
+This is called a **query parameter model**.
+
+> **One-liner:** *"Use a Pydantic model + `Depends()` for complex query shapes."*
+
 </div>

@@ -561,4 +561,127 @@ def secure_data(user = Security(verify_token)):    # ← Security, not Depends
 
 Made with ❤️, a prep cook called `Depends`, and a token called `mysecrettoken`.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is dependency injection in FastAPI?
+
+**Answer:** A pattern where FastAPI calls a function for you and injects its return value into your route. The mechanism is `Depends(some_function)`.
+
+```python
+def get_db():
+    return SessionLocal()
+
+@app.get("/items")
+def list_items(db = Depends(get_db)): ...    # db = get_db() result
+```
+
+> **One-liner:** *"Depends = call this function, hand me the result."*
+
+### Q2: Why use dependency injection?
+
+**Answer:** Three reasons:
+
+1. **DRY** — share logic across routes
+2. **Testability** — replace dependencies in tests with fakes
+3. **Composability** — dependencies can depend on other dependencies
+
+> **One-liner:** *"DRY + Testable + Composable."*
+
+### Q3: How do you read a request header in FastAPI?
+
+**Answer:** Use `Header(...)`:
+
+```python
+from fastapi import Header
+
+def verify(token: str = Header(None)):
+    ...
+```
+
+By default, the parameter name maps to the header name (case-insensitive). `token: str = Header(None)` reads the `token` header.
+
+> **One-liner:** *"`Header(None)` reads a custom header."*
+
+### Q4: How do you build a token-based auth check?
+
+**Answer:** Define a function that validates the token, raise `HTTPException(401)` on failure:
+
+```python
+def verify_token(token: str = Header(None)):
+    if token != "secret":
+        raise HTTPException(401, "Unauthorized")
+    return {"user": "authorized"}
+
+@app.get("/secure")
+def secure(user = Depends(verify_token)):
+    return user
+```
+
+> **One-liner:** *"Function that raises 401 = auth gate."*
+
+### Q5: How do you reuse one dependency across many routes?
+
+**Answer:** Just inject it everywhere:
+
+```python
+def verify_token(...): ...
+
+@app.get("/a")
+def a(user = Depends(verify_token)): ...
+
+@app.get("/b")
+def b(user = Depends(verify_token)): ...
+```
+
+Same check, multiple routes. The dependency runs once per request.
+
+> **One-liner:** *"Inject it everywhere — DRY."*
+
+### Q6: What's the difference between `Depends` and `Security`?
+
+**Answer:** Functionally identical. `Security` is for **auth-related** dependencies and adds a 🔒 lock icon in `/docs`:
+
+```python
+from fastapi import Security
+
+@app.get("/secure")
+def secure(user = Security(verify_token)): ...    # 🔒 in Swagger
+```
+
+> **One-liner:** *"`Security` = `Depends` + 🔒 icon in docs."*
+
+### Q7: How do you replace a dependency in tests?
+
+**Answer:** Use `app.dependency_overrides`:
+
+```python
+def fake_token():
+    return {"user": "Test User"}
+
+app.dependency_overrides[verify_token] = fake_token
+
+# Now /secure-data uses fake_token instead
+client = TestClient(app)
+client.get("/secure-data")
+```
+
+> **One-liner:** *"`app.dependency_overrides[dep] = fake` for tests."*
+
+### Q8: What are "yield dependencies" and when do you need them?
+
+**Answer:** Dependencies that use `yield` to set up AND tear down resources — typically **database sessions** or file handles:
+
+```python
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db     # route runs here
+    finally:
+        db.close()   # always runs after
+```
+
+> **One-liner:** *"Yield = setup + teardown (DB sessions, files)."*
+
 </div>

@@ -560,4 +560,127 @@ Address(pincode=110001)      # ✅ OK
 
 Made with ❤️ and a stack of nested envelopes.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is a nested Pydantic model?
+
+**Answer:** A model that has another Pydantic class as one of its fields. Validation **cascades** through every layer.
+
+```python
+class Address(BaseModel):
+    city: str
+    pincode: int
+
+class User(BaseModel):
+    name: str
+    address: Address    # ← nested
+```
+
+> **One-liner:** *"A model whose field is another model."*
+
+### Q2: How does validation work for nested models?
+
+**Answer:** Cascading — if the inner is bad, the outer fails. The 422 error's `loc` shows the path:
+
+```json
+{
+  "detail": [{
+    "type": "int_parsing",
+    "loc": ["body", "address", "pincode"],
+    ...
+  }]
+}
+```
+
+> **One-liner:** *"Validation cascades. The `loc` shows the path."*
+
+### Q3: How do you make a nested field optional?
+
+**Answer:** Use `Optional[T] = None`:
+
+```python
+class User(BaseModel):
+    name: str
+    address: Optional[Address] = None    # entire address optional
+```
+
+> **One-liner:** *"`Optional[Nested] = None` makes the whole block skippable."*
+
+### Q4: How do you represent a list of nested objects?
+
+**Answer:** Use `List[T]`:
+
+```python
+from typing import List
+
+class Order(BaseModel):
+    id: int
+    items: List[Address]
+```
+
+```json
+{
+  "id": 1,
+  "items": [
+    {"city": "Delhi", "pincode": 110001},
+    {"city": "Mumbai", "pincode": 400001}
+  ]
+}
+```
+
+> **One-liner:** *"`List[NestedModel]` = list of validated nested objects."*
+
+### Q5: Why is "reusing" the nested model a best practice?
+
+**Answer:** DRY (Don't Repeat Yourself). One `Address` model can be referenced by `User`, `Order`, `Company`, etc. — define once, validate everywhere.
+
+> **One-liner:** *"Define once, reuse everywhere — DRY."*
+
+### Q6: How do you switch Pydantic to strict mode (no type coercion)?
+
+**Answer:** Add a `model_config` in v2:
+
+```python
+from pydantic import BaseModel, ConfigDict
+
+class Address(BaseModel):
+    model_config = ConfigDict(strict=True)
+    pincode: int
+
+Address(pincode="110001")    # ❌ ValidationError
+Address(pincode=110001)      # ✅
+```
+
+> **One-liner:** *"Coerce by default, strict on demand."*
+
+### Q7: What's the difference between `model_dump()` and `dict()` in Pydantic v2?
+
+**Answer:** In Pydantic v2, the legacy `.dict()` is deprecated. Use:
+
+| Method | Returns |
+|:-------|:--------|
+| `model_dump()` | Plain Python dict |
+| `model_dump_json()` | JSON string |
+| `model_dump(exclude_none=True)` | Dict without `None` fields |
+
+> **One-liner:** *"`model_dump()` (v2) replaces `.dict()` (v1)."*
+
+### Q8: How do you validate the response shape (not just the input)?
+
+**Answer:** Use `response_model`:
+
+```python
+@app.post("/create_user", response_model=UserResponse)
+def create_user(user: User): ...
+```
+
+FastAPI:
+- ✅ Validates the return value
+- ✅ Filters out extra fields
+- ✅ Documents the response in `/docs`
+
+> **One-liner:** *"`response_model` = input filter + output guard."*
+
 </div>

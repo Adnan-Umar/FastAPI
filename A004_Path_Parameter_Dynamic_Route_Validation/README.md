@@ -374,4 +374,122 @@ def get_user_order(user_id: int, order_id: int):
 
 Made with ❤️ and a pair of curly braces.
 
+---
+
+## 🎯 Interview Q&A
+
+### Q1: What is a path parameter?
+
+**Answer:** A **path parameter** is a variable part of the URL path itself, declared with `{name}` in the route and captured into a function argument by the same name.
+
+```python
+@app.get("/users/{user_id}")
+def get_user(user_id: int): ...    # user_id captured from URL
+```
+
+> **One-liner:** *"`{name}` in the path = variable in the function."*
+
+### Q2: How does FastAPI validate path parameters?
+
+**Answer:** Via the **Python type hint** on the function argument. The hint tells FastAPI to:
+
+- ✅ Try to convert the URL string to that type
+- ❌ Return 422 if conversion fails
+
+```python
+def get_user(user_id: int): ...    # "abc" → 422, "42" → 42
+```
+
+> **One-liner:** *"Type hint = validator. The type does the work."*
+
+### Q3: How do you add constraints like minimum/maximum to a path parameter?
+
+**Answer:** Use `Path()` from FastAPI:
+
+```python
+from fastapi import Path
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int = Path(..., ge=1, le=10_000)):
+    ...
+```
+
+`ge` = greater or equal, `le` = less or equal, `gt`, `lt` for strict. The `...` means "required".
+
+> **One-liner:** *"`Path(..., ge=1, le=N)` adds numeric constraints."*
+
+### Q4: Why is route registration order important for path parameters?
+
+**Answer:** FastAPI matches routes **top-down**. Static routes must be registered **before** dynamic catch-alls:
+
+```python
+@app.get("/users/me")          # specific
+@app.get("/users/{user_id}")   # catch-all
+```
+
+Otherwise `/users/me` would match `{user_id}` and become a 422.
+
+> **One-liner:** *"Specific before general — top-down matching."*
+
+### Q5: How can you make a path parameter accept a UUID instead of an int?
+
+**Answer:** Use the `UUID` type from the standard library:
+
+```python
+from uuid import UUID
+
+@app.get("/orders/{order_id}")
+def get_order(order_id: UUID): ...
+```
+
+FastAPI parses and validates the UUID; invalid UUIDs return 422.
+
+> **One-liner:** *"Type-hint with `UUID` and FastAPI parses it for you."*
+
+### Q6: What's the difference between path and query parameters?
+
+**Answer:**
+
+| Path | Query |
+|:-----|:------|
+| Inside URL path | After `?` |
+| Required (by default) | Optional (by default) |
+| `/users/42` | `/users?id=42` |
+| Identifies a resource | Filters / paginates |
+
+> **One-liner:** *"Path = identity. Query = filter."*
+
+### Q7: How does FastAPI return validation errors for path params?
+
+**Answer:** A **`422 Unprocessable Entity`** with a structured body:
+
+```json
+{
+  "detail": [{
+    "type": "int_parsing",
+    "loc": ["path", "user_id"],
+    "msg": "Input should be a valid integer...",
+    "input": "abc"
+  }]
+}
+```
+
+The `loc` array tells you exactly which field failed.
+
+> **One-liner:** *"422 with TLMI shape (Type, Location, Message, Input)."*
+
+### Q8: Can a path parameter be optional? How?
+
+**Answer:** Path parameters are **required by default** (otherwise the route wouldn't match). To make one optional, declare a *separate* route with a different path:
+
+```python
+@app.get("/users/{user_id}")  # /users/42
+def get_user(user_id: int): ...
+
+@app.get("/users/")           # /users (no id)
+def list_users(): ...
+```
+
+> **One-liner:** *"Path params can't be optional. Make a sibling route instead."*
+
 </div>
