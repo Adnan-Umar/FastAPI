@@ -10,5 +10,10 @@ def get_users(name: str = None):
 def get_products(limit: int = 10):
     return {"Limit": limit}
 
-@app.get("items")
-def get
+# http://127.0.0.1:8000/items?name=mobile&price=20000
+@app.get("/items")
+def get_items(name: str = None, price: int = 0):
+    return {
+        "name": name,
+        "Price": price
+    }
