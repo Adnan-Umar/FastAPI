@@ -207,10 +207,11 @@ def about():    # second definition (same name!)
 ```
 
 **Symptoms:**
-- `/about` still works (uses the second `about`).
-- `/users` returns the **about-page JSON**, not users!
+- `/about` *appears* to work, but **returns the wrong body** — the users JSON instead of the about-page message.
+- `/users` also returns that same (wrong) body, because both routes are served by the second `about` function.
+- The FastAPI route table itself is fine — but the *function bound to both URLs* is wrong.
 
-**Rule:** Always give handler functions **unique names**, even if their URLs differ.
+**Rule:** Always give handler functions **unique names**, even if their URLs differ. The function name is for *Python*; the URL is for *clients*. They should not be confused.
 
 ### 🐛 Pitfall 2: Trailing Slashes
 
@@ -282,6 +283,54 @@ def read_user(user_id: int):
 | Route = | **URL + method → function** | "Phone number routing" |
 | Handler names | **Unique names always** | "Two people named John = chaos" |
 | Static vs dynamic | **Specific before general** | "Specific rooms before hallways" |
+
+---
+
+## 🧠 Bonus — Route Matching Diagram
+
+```mermaid
+flowchart TD
+    Start([Incoming request: GET /users]) --> Scan[FastAPI scans route table top-down]
+    Scan --> R1{Route 1: GET /}
+    R1 -- URL mismatch --> R2{Route 2: GET /about}
+    R2 -- URL mismatch --> R3{Route 3: GET /users}
+    R3 -- ✅ match --> Call[Call bound function]
+    Call --> Done([Return JSON response])
+```
+
+**Key insight:** FastAPI matches the **first** route whose (verb, path) fits. Order matters when patterns overlap.
+
+### `APIRouter` for Growing Apps
+
+Once a single file gets crowded, split routes into modules:
+
+```python
+# users.py
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+@router.get("/")
+def list_users(): ...
+
+@router.get("/{user_id}")
+def get_user(user_id: int): ...
+
+# main.py
+from fastapi import FastAPI
+from users import router
+
+app = FastAPI()
+app.include_router(router)
+```
+
+| `APIRouter` arg | Purpose |
+|:----------------|:--------|
+| `prefix` | URL prefix (e.g., `/users`) |
+| `tags` | Group in Swagger UI (e.g., "users") |
+| `dependencies` | Apply deps to all routes in router |
+
+> 🧠 **Mnemonic:** "**APIRouter = mini-app, `include_router` = plug it in.**"
 
 ---
 

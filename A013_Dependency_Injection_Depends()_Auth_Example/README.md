@@ -369,7 +369,7 @@ curl -i http://127.0.0.1:8000/secure-data
 HTTP/1.1 422 Unprocessable Entity
 ```
 
-Why 422? Because `Header(None)` doesn't accept a missing header gracefully. To make it return 401 instead, use a different approach:
+Why 422? Because the parameter is declared `token: str = Header(None)` — the **`str` type hint conflicts with the `None` default**. FastAPI sees "non-Optional str that defaults to None" and treats the missing header as a validation error. The fix is to use `Optional[str]` (or `str | None`) so a missing header is legitimate:
 
 ```python
 from fastapi import Header
@@ -527,6 +527,91 @@ def secure_data(user = Security(verify_token)):    # ← Security, not Depends
 | Why DI | **DRY + Test + Composable** | Three gifts |
 | `Depends` is | **Automatic function call** | Syntactic sugar |
 | `Security` vs `Depends` | **Security = 🔒 in docs** | Same execution, different docs |
+
+---
+
+## 🆕 Modern Style — `Annotated` Dependencies
+
+> Recommended for new code. Cleaner, more reusable, no `= Depends(...)` clutter.
+
+### Legacy vs Modern
+
+```python
+# Legacy
+def get_user(token: str = Header(None)):
+    ...
+
+@app.get("/me")
+def me(user = Depends(get_user)):
+    return user
+
+# Modern (recommended)
+from typing import Annotated
+from fastapi import Depends
+
+def get_user(token: Annotated[str | None, Header()] = None):
+    ...
+
+@app.get("/me")
+def me(user: Annotated[dict, Depends(get_user)]):
+    return user
+```
+
+### Reusable Type Aliases — the Killer Feature
+
+```python
+from typing import Annotated
+from fastapi import Depends
+
+# Define ONCE
+CurrentUser = Annotated[dict, Depends(get_user)]
+
+# Reuse EVERYWHERE — no more `= Depends(...)` clutter
+@app.get("/me")
+def me(user: CurrentUser): ...
+
+@app.get("/profile")
+def profile(user: CurrentUser): ...
+
+@app.get("/dashboard")
+def dashboard(user: CurrentUser): ...
+```
+
+> 🧠 **Mnemonic:** "**Annotated[Type, Depends(F)] = reusable dependency.**"
+
+### Caching Strategies
+
+```python
+# Per-request caching (default, use_cache=True)
+# Same dep called twice in one request → only one execution
+@app.get("/a")
+def a(user: Annotated[dict, Depends(get_user)]): ...
+@app.get("/b")
+def b(user: Annotated[dict, Depends(get_user)]): ...
+
+# Per-call (use_cache=False) — use when the dep should re-run
+@app.get("/c")
+def c(user: Annotated[dict, Depends(get_user, use_cache=False)]): ...
+```
+
+| `use_cache` | Behavior | When to use |
+|:------------|:---------|:------------|
+| `True` (default) | Once per request | Most cases (DB session, current user) |
+| `False` | Every call | Random tokens, timestamps |
+
+### Dependency Tree (Mermaid)
+
+```mermaid
+graph TD
+  A["/secure-data"] --> B["Depends(verify_token)"]
+  B --> C["Header('token')"]
+  A --> D["Depends(get_db)"]
+  D --> E["SessionLocal()"]
+  A --> F["Depends(get_settings)"]
+  F --> G["load_config()"]
+```
+
+> Each `Depends` runs *independently*. If a dependency fails, the route never runs.
 
 ---
 

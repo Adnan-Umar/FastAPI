@@ -345,6 +345,55 @@ def get_user_order(user_id: int, order_id: int):
 
 ---
 
+## 🧠 Bonus — Path Validation Flow
+
+```mermaid
+flowchart TD
+    A[Request: GET /users/42] --> B[Match route pattern]
+    B --> C[Regex captures '42' into user_id]
+    C --> D{Type hint is int?}
+    D -- Yes --> E[Try int&#40;'42'&#41;]
+    E -- Success --> F{Path constraints pass?}
+    E -- Failure --> Err1[422 int_parsing]
+    F -- Yes --> G[Call function with user_id=42]
+    F -- No --> Err2[422 constraint_violation]
+    D -- No --> G
+    G --> H[200 OK + JSON]
+```
+
+### Special Path Syntax — `{name:path}`
+
+By default, `{name}` matches **one URL segment** (no slashes). Use `{name:path}` to match **multiple segments including slashes**:
+
+```python
+@app.get("/files/{file_path:path}")
+def read_file(file_path: str):
+    # /files/a/b/c.txt  →  file_path = "a/b/c.txt"
+    ...
+```
+
+### `Path()` with Metadata for Swagger
+
+```python
+from fastapi import Path
+
+@app.get("/users/{user_id}")
+def get_user(
+    user_id: int = Path(
+        ...,
+        title="User ID",
+        description="The unique identifier of the user",
+        ge=1,
+        examples=[1, 42, 1000]      # ← shows up in Swagger UI!
+    )
+):
+    ...
+```
+
+> 🧠 **Mnemonic:** "**`examples=` is the best-kept Swagger secret.**" It populates the dropdown in `/docs`.
+
+---
+
 ## 🧪 Recall Test
 
 1. What does `{user_id}` do in a path?

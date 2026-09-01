@@ -494,6 +494,69 @@ async def handler(request: Request, exc: UserNotFoundException):
 
 ---
 
+## 🧠 Bonus — Exception Propagation Diagram
+
+```mermaid
+flowchart TD
+    R[Route runs] --> Raise{raise X?}
+    Raise -- No --> Return[return value]
+    Return --> OK[200 OK + JSON]
+    Raise -- HTTPException --> B[FastAPI built-in handler]
+    Raise -- CustomException --> Lookup{Lookup registered handler}
+    Lookup -- Found --> H[Your handler]
+    Lookup -- Not found --> Default[Default 500]
+    B --> JSONResp[JSONResponse]
+    H --> JSONResp
+    Default --> JSONResp
+    JSONResp --> Client([Client receives error JSON])
+```
+
+### Programmatic Registration — `add_exception_handler`
+
+You can also register a handler from code (not as a decorator):
+
+```python
+def not_found_handler(request, exc):
+    return JSONResponse(404, {"error": "not_found"})
+
+app.add_exception_handler(UserNotFoundException, not_found_handler)
+```
+
+Useful when:
+
+- The handler is in a different module
+- You're building a plugin system
+- You need to register at runtime
+
+### Why `async def` Matters for `await`
+
+```python
+# ❌ Can't await in sync def
+def handler(request, exc):
+    body = request.json()    # TypeError!
+
+# ✅ async def lets you await
+async def handler(request, exc):
+    body = await request.json()    # works
+```
+
+The `request.json()` method is **async** (it reads the request stream). To use it, your handler must be `async def` and use `await`.
+
+> 🧠 **Mnemonic:** "**Async handler = can await. Sync handler = no await.**"
+
+### Re-raising in a Handler
+
+```python
+@app.exception_handler(SomeException)
+def handler(request, exc):
+    logger.error(f"Got: {exc}")
+    raise exc    # ← re-raise to a higher-level handler
+```
+
+Use this when you want to **log first, then let another handler decide the response**.
+
+---
+
 ## 🧪 Recall Test
 
 1. What's the difference between `HTTPException` and a custom exception?

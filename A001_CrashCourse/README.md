@@ -445,6 +445,36 @@ def add_tea(tea: Tea):
 
 ---
 
+## 🧠 Bonus — Request Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant C as Client (curl/browser)
+    participant U as Uvicorn
+    participant F as FastAPI
+    participant P as Pydantic
+    participant H as Your handler
+
+    C->>U: POST /teas {name, age}
+    U->>F: route matched: POST /teas
+    F->>P: parse + validate body
+    alt valid input
+        P-->>F: Tea(name="A", age=25)
+        F->>H: create_user(tea)
+        H-->>F: tea object
+        F-->>U: 201 Created + JSON
+        U-->>C: HTTP response
+    else invalid input
+        P-->>F: ValidationError
+        F-->>U: 422 + {detail: [...]}
+        U-->>C: HTTP error
+    end
+```
+
+> 🧠 **Notice:** Your handler **only runs on the success branch**. Pydantic catches the errors upstream.
+
+---
+
 ## 🧪 Recall Test (Tomorrow Morning)
 
 Close this README. On a blank page, answer:

@@ -498,6 +498,81 @@ def create_user(user: User):
 
 ---
 
+## 🆕 Modern Style — `Annotated` + `Body()`
+
+### Why Use `Annotated` With Body Models?
+
+```python
+# Legacy
+@app.post("/create-user")
+def create_user(user: User): ...    # implicit body
+
+# Modern (explicit + reusable)
+from typing import Annotated
+from fastapi import Body
+
+@app.post("/create-user")
+def create_user(user: Annotated[User, Body(description="New user payload")]): ...
+```
+
+The benefit: you can attach **`Body()` metadata** (description, examples, media_type) using the same pattern as `Query()`.
+
+### Optional Body
+
+```python
+from fastapi import Body
+
+@app.post("/update")
+def update(
+    user: Annotated[User | None, Body()] = None    # ← body is optional
+):
+    return user
+```
+
+### Multiple Bodies in One Request
+
+```python
+class Item(BaseModel):
+    name: str
+    qty: int
+
+class User(BaseModel):
+    name: str
+
+@app.post("/multi")
+def multi(
+    item: Item,
+    user: User,
+    importance: Annotated[int, Body()] = 5    # ← extra body field
+):
+    return {"item": item, "user": user, "importance": importance}
+```
+
+The client sends:
+
+```json
+{
+  "item": {"name": "x", "qty": 2},
+  "user": {"name": "y"},
+  "importance": 10
+}
+```
+
+> 🧠 **Mnemonic:** "**Annotated = sandwich**" — type is the bread, metadata is the filling.
+
+### Content-Type Reference
+
+| Content-Type | FastAPI param type | Use case |
+|:-------------|:-------------------|:---------|
+| `application/json` | Pydantic model | API requests (most common) |
+| `application/x-www-form-urlencoded` | `Form(...)` | HTML form submission |
+| `multipart/form-data` | `File(...)`, `UploadFile` | File uploads |
+| `text/plain` | `str` (raw) | Webhooks, plain text |
+
+> **Decision rule:** *JSON for APIs. Forms for HTML. Files for uploads.*
+
+---
+
 ## 🧪 Recall Test
 
 1. What's the difference between path/query parameters and a request body?

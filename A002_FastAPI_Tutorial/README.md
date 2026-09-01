@@ -267,6 +267,74 @@ You didn't ask for any of that. FastAPI did it because **the framework's job is 
 
 ---
 
+## 🧠 Bonus — Direct Execution with `if __name__ == "__main__"`
+
+You can run the file **without Uvicorn** for quick tests:
+
+```python
+from fastapi import FastAPI
+import uvicorn
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "Hello"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+```
+
+Then run:
+
+```powershell
+python main.py
+```
+
+**When to use each:**
+
+| Launch method | When to use |
+|:--------------|:------------|
+| `uvicorn main:app` (CLI) | Normal dev — auto-reload with `--reload` |
+| `python main.py` (script) | Quick demos, single-file scripts |
+| `gunicorn main:app -k uvicorn.workers.UvicornWorker` | Production |
+
+### The ASGI `__call__` Protocol
+
+The `app` object isn't just a FastAPI instance — it's a **callable** that follows the ASGI protocol:
+
+```python
+# This is what uvicorn does under the hood
+await app(scope, receive, send)
+```
+
+Where:
+
+- `scope` — dict with URL, method, headers
+- `receive` — async callable to read the request body
+- `send` — async callable to send response chunks
+
+You don't call this directly. Knowing it exists helps when you write **custom middleware** or **ASGI components**.
+
+> 🧠 **Mnemonic:** "**ASGI = Async Server Gateway Interface. It's a contract.**"
+
+### Useful Uvicorn Flags
+
+```powershell
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level info
+```
+
+| Flag | Meaning |
+|:-----|:--------|
+| `--host 0.0.0.0` | Listen on all interfaces (LAN-accessible) |
+| `--port 8000` | Port number |
+| `--reload` | Auto-reload on file change (dev only) |
+| `--log-level info` | Verbosity (debug, info, warning, error) |
+| `--workers 4` | Number of processes (production) |
+| `--proxy-headers` | Trust X-Forwarded-* from reverse proxy |
+
+---
+
 ## 🧪 Recall Test
 
 Close the README. On a blank page:

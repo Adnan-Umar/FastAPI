@@ -481,6 +481,54 @@ def get_user():
 
 ---
 
+## 🧠 Bonus — Response Filtering Flow
+
+```mermaid
+flowchart LR
+    A[Function returns full User object] --> B[response_model=UserResponse]
+    B --> C[FastAPI builds UserResponse]
+    C --> D{Field in UserResponse?}
+    D -- Yes --> E[Keep it]
+    D -- No --> F[Drop it]
+    E --> G[Serialize to JSON]
+    F --> G
+    G --> H[Client receives only safe fields]
+```
+
+### `JSONResponse` and `ORJSONResponse` for Speed
+
+When you need **manual control** or **faster JSON serialization**, return a `Response` object directly:
+
+```python
+from fastapi.responses import JSONResponse, ORJSONResponse
+
+@app.get("/items")
+def items():
+    return JSONResponse(
+        status_code=200,
+        content={"items": [...]}
+    )
+```
+
+| Response class | Speed | When to use |
+|:---------------|:------|:------------|
+| `JSONResponse` (default) | Standard | Most cases |
+| `ORJSONResponse` | 2-3× faster | Large payloads, high-throughput APIs |
+| `PlainTextResponse` | — | Non-JSON data |
+| `HTMLResponse` | — | HTML pages |
+| `StreamingResponse` | — | Files, server-sent events |
+| `FileResponse` | — | Static files |
+
+Install `orjson` first:
+
+```powershell
+pip install orjson
+```
+
+> 🧠 **Mnemonic:** "**ORJSON = Optimized Rust JSON.** Drop-in replacement for fast APIs."
+
+---
+
 ## 🧪 Recall Test
 
 1. What does `response_model=UserResponse` do?

@@ -552,6 +552,72 @@ def update_user(
 
 ---
 
+## 🧠 Bonus — Where Data Lives in an HTTP Request
+
+```mermaid
+flowchart LR
+    subgraph URL[URL line]
+        path[Path: /users/42]
+        q[Query: ?notify=true]
+    end
+    subgraph Headers
+        h[Header: Content-Type: application/json]
+    end
+    subgraph Body
+        b["Body: {name: 'Md', age: 30}"]
+    end
+    URL --> F[FastAPI signature]
+    Headers --> F
+    Body --> F
+    F --> Sig["user_id: int (path) | user: User (body) | notify: bool = False (query)"]
+```
+
+### `BackgroundTasks` — Fire-and-Forget Work
+
+Sometimes you need to do work **after** the response is sent (email, logs, analytics):
+
+```python
+from fastapi import BackgroundTasks
+
+def send_email(to: str, body: str):
+    # Long-running work
+    ...
+
+@app.post("/notify")
+def notify(user: User, background: BackgroundTasks):
+    background.add_task(send_email, user.email, "Welcome!")
+    return {"message": "Notification queued"}
+```
+
+The endpoint returns immediately; `send_email` runs after.
+
+| Use `BackgroundTasks` for | Don't use it for |
+|:--------------------------|:-----------------|
+| Email notifications | Critical writes (use a queue) |
+| Logging / analytics | Anything the user needs back |
+| Cache invalidation | Database updates (use a worker) |
+
+### `Request` Object — Access Everything
+
+You can inject the raw `Request` to access headers, URL, body, cookies, etc.:
+
+```python
+from fastapi import Request
+
+@app.get("/inspect")
+def inspect(request: Request):
+    return {
+        "method": request.method,
+        "url": str(request.url),
+        "headers": dict(request.headers),
+        "client": request.client.host
+    }
+```
+
+> 🧠 **Mnemonic:** "**Path identifies, Query filters, Body delivers, Request reveals.**"
+
+---
+
 ## 🧪 Recall Test
 
 1. Which three places in an HTTP request can carry data?

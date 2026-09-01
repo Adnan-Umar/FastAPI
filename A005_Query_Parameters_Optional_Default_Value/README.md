@@ -375,6 +375,53 @@ GET /search?tags=tea&tags=coffee
 
 ---
 
+## 🆕 Modern Style — `Annotated` Syntax
+
+> Recommended for **new code**. Cleaner, more composable, and easier to read.
+
+### The Old vs New
+
+```python
+# Legacy (still works)
+def list_items(limit: int = Query(10, ge=1, le=100)): ...
+
+# Modern (recommended)
+from typing import Annotated
+from fastapi import Query
+
+def list_items(limit: Annotated[int, Query(ge=1, le=100)] = 10): ...
+```
+
+| Aspect | Legacy | Modern `Annotated` |
+|:-------|:-------|:-------------------|
+| Default lives in | `Query()` | After `=` |
+| Reuse the same constraint | Copy/paste `Query(...)` | Define a type alias |
+| Editor type-checking | Sometimes confused | Clean |
+| FastAPI version | All | 0.95+ |
+
+### Reusable Type Aliases — the Killer Feature
+
+```python
+from typing import Annotated
+from fastapi import Query
+
+# Define ONCE
+PositiveInt = Annotated[int, Query(ge=1, le=10_000)]
+
+# Reuse EVERYWHERE
+@app.get("/users/{user_id}")
+def get_user(user_id: PositiveInt): ...
+
+@app.get("/orders/{order_id}")
+def get_order(order_id: PositiveInt): ...
+```
+
+Same constraint, two endpoints, zero duplication.
+
+> 🧠 **Mnemonic:** "**Annotated = meta-data sandwich**" — the type is the bread, the metadata is the filling.
+
+---
+
 ## 🧪 Recall Test
 
 1. What's the difference between `?key=val` and `/key/val`?

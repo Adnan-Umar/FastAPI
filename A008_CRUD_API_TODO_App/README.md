@@ -566,6 +566,69 @@ Now FastAPI:
 
 ---
 
+## 🧠 Bonus — Todo Lifecycle Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending : POST /todos (completed=false)
+    pending --> completed : PUT /todos/{id} (completed=true)
+    completed --> pending : PUT /todos/{id} (completed=false)
+    pending --> [*] : DELETE /todos/{id}
+    completed --> [*] : DELETE /todos/{id}
+```
+
+### Soft Delete vs Hard Delete
+
+The current code uses **hard delete** (removes from list). In production you'd usually prefer **soft delete**:
+
+| Approach | What happens | How to query |
+|:---------|:-------------|:--------------|
+| **Hard delete** | `todos.pop(idx)` — gone forever | All queries |
+| **Soft delete** | Set `deleted_at: datetime` | Filter `WHERE deleted_at IS NULL` |
+
+```python
+class Todo(BaseModel):
+    id: int
+    title: str
+    completed: bool
+    deleted_at: datetime | None = None    # ← soft delete marker
+
+# Soft delete
+todo.deleted_at = datetime.utcnow()
+
+# Query only active
+active = [t for t in todos if t.deleted_at is None]
+```
+
+### Audit Fields
+
+Real apps almost always need:
+
+```python
+class Todo(BaseModel):
+    id: int
+    title: str
+    completed: bool
+    created_at: datetime    # ← when added
+    updated_at: datetime    # ← last modified
+    created_by: str         # ← who added
+```
+
+Use Pydantic defaults to set timestamps automatically:
+
+```python
+from datetime import datetime
+
+class Todo(BaseModel):
+    id: int
+    title: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+```
+
+> 🧠 **Mnemonic:** "**Hard delete = gone. Soft delete = marked. Audit = 'who, when, what'.**"
+
+---
+
 ## 🧪 Recall Test
 
 1. What HTTP verb maps to "Update"?

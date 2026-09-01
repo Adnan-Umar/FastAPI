@@ -529,6 +529,70 @@ Address(pincode=110001)      # ✅ OK
 
 ---
 
+## 🆕 Modern Patterns — Cross-field Validation & Generics
+
+### Cross-field Validation with `@model_validator`
+
+Sometimes a rule depends on **multiple fields** together:
+
+```python
+from pydantic import BaseModel, model_validator
+
+class DateRange(BaseModel):
+    start: str   # ISO date
+    end: str
+
+    @model_validator(mode="after")
+    def check_order(self):
+        if self.start > self.end:
+            raise ValueError("start must be before end")
+        return self
+```
+
+```bash
+# ✅ Valid
+{"start": "2026-01-01", "end": "2026-12-31"}
+
+# ❌ 422 — model_validator catches it
+{"start": "2026-12-31", "end": "2026-01-01"}
+```
+
+> 🧠 **Mnemonic:** "**@field_validator = one field. @model_validator = many fields.**"
+
+### Generic Models (Pydantic v2)
+
+```python
+from typing import Generic, TypeVar
+from pydantic import BaseModel
+
+T = TypeVar("T")
+
+class Page(BaseModel, Generic[T]):
+    items: list[T]
+    total: int
+
+# Use it with any model
+Page[User](items=[User(name="a", age=1)], total=1)
+Page[Address](items=[Address(city="Delhi", pincode=110001)], total=1)
+```
+
+This is the same pattern FastAPI uses internally for `response_model=list[T]`.
+
+### Annotated Nested Models
+
+```python
+from typing import Annotated
+from pydantic import BaseModel, Field
+
+class Address(BaseModel):
+    city: Annotated[str, Field(min_length=2, max_length=50)]
+    pincode: Annotated[int, Field(ge=100000, le=999999)]
+```
+
+Same constraints, modern syntax.
+
+---
+
 ## 🧪 Recall Test
 
 1. What's the syntax for a nested Pydantic model?

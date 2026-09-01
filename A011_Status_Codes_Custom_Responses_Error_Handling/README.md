@@ -546,6 +546,59 @@ def get_user(user_id: int):
 
 ---
 
+## 🧠 Bonus — Status Code Decision Tree
+
+```mermaid
+flowchart TD
+    Start([Response time!]) --> Worked{Did it work?}
+    Worked -- No --> Whose{Whose fault?}
+    Whose -- Client's --> Cli{What happened?}
+    Cli -- "Bad input shape" --> C422[422 Unprocessable Entity]
+    Cli -- "Missing/invalid auth" --> C401[401 Unauthorized]
+    Cli -- "Authenticated but not allowed" --> C403[403 Forbidden]
+    Cli -- "Resource doesn't exist" --> C404[404 Not Found]
+    Cli -- "Duplicate / state conflict" --> C409[409 Conflict]
+    Cli -- "Other client mistake" --> C400[400 Bad Request]
+    Whose -- Server's --> C500[500 Internal Server Error]
+    Worked -- Yes --> Verb{Which verb?}
+    Verb -- GET --> C200[200 OK]
+    Verb -- POST --> C201[201 Created]
+    Verb -- PUT/PATCH --> C200b[200 OK]
+    Verb -- DELETE --> C204[204 No Content]
+```
+
+> 🧠 **Use this tree in interviews:** "What status code would you return for X?" — walk the branches.
+
+### `Response` Object — Direct Mutation
+
+You can also mutate the `Response` object inside the function:
+
+```python
+from fastapi import Response, status
+
+@app.get("/custom")
+def custom(response: Response):
+    response.status_code = status.HTTP_201_CREATED
+    response.headers["X-Custom"] = "value"
+    return {"created": True}
+```
+
+### `Cookie` Parameters
+
+```python
+from fastapi import Cookie
+
+@app.get("/whoami")
+def whoami(session: str | None = Cookie(None)):
+    return {"session": session}
+```
+
+Reads the `Cookie: session=...` header from the request.
+
+> 🧠 **Mnemonic:** "**Query = `?`, Header = custom headers, Cookie = `Cookie:` header.**"
+
+---
+
 ## 🧪 Recall Test
 
 1. What's the default status code for a successful `GET`?
