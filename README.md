@@ -178,6 +178,66 @@ flowchart LR
 └── 🔍 A005_Query_Parameters_Optional_Default_Value/
       ├── 🐍 main.py                   ← optional query params + defaults
       └── 📖 README.md                 ← deep dive on query params
+│
+├── 📝 A006_Request_Body_POST_API_Pydantic_Explained/
+│     ├── 🐍 main.py                   ← POST /create-user with Pydantic
+│     └── 📖 README.md                 ← deep dive on request bodies
+│
+├── 🧬 A007_Pydanti_Models_Data_Validation_Nested_Schemas/
+│     ├── 🐍 main.py                   ← nested User → Address
+│     └── 📖 README.md                 ← deep dive on nested models
+│
+├── ✅ A008_CRUD_API_TODO_App/
+│     ├── 🐍 main.py                   ← TODO CRUD (in-memory)
+│     └── 📖 README.md                 ← deep dive on CRUD
+│
+├── 🛤️ A009_Path_Query_Body_Together/
+│     ├── 🐍 main.py                   ← PUT combining path + body + query
+│     └── 📖 README.md                 ← deep dive on combined inputs
+│
+├── 🙈 A010_Response_Models_Data_Validation_Hide_Sensitive_Data/
+│     ├── 🐍 main.py                   ← response_model filters password
+│     └── 📖 README.md                 ← deep dive on response models
+│
+├── 🚨 A011_Status_Codes_Custom_Responses_Error_Handling/
+│     ├── 🐍 main.py                   ← 201, custom envelopes, HTTPException
+│     └── 📖 README.md                 ← deep dive on status & errors
+│
+├── 🌍 A012_Exception_Handling_HTTPException_Global_Error_Handler/
+│     ├── 🐍 main.py                   ← UserNotFoundException + @exception_handler
+│     └── 📖 README.md                 ← deep dive on global errors
+│
+├── 🔐 A013_Dependency_Injection_Depends()_Auth_Example/
+│     ├── 🐍 main.py                   ← verify_token dep + Header
+│     └── 📖 README.md                 ← deep dive on dependency injection
+│
+├── 🧭 A014_Middleware_Explained_Logging_Request_Response_Flow/
+│     ├── 🐍 main.py                   ← @app.middleware("http") timing
+│     └── 📖 README.md                 ← deep dive on middleware
+│
+├── 🗄️ A015_SQLite_Database_Integration_Setup_SQLAlchemy_Intro/
+│     ├── 🐍 main.py                   ← raw sqlite3 + CREATE TABLE
+│     └── 📖 README.md                 ← deep dive on raw SQLite
+│
+├── 🧪 A016_SQLAlchemy_Setup_Models_Database_Integration/
+│     ├── 🐍 main.py                   ← SQLAlchemy ORM: engine, session, Todo
+│     └── 📖 README.md                 ← deep dive on SQLAlchemy setup
+│
+├── ➕ A017_CREATE_Operation_with_Database/
+│     ├── 🐍 main.py                   ← POST /todos with db.add/commit/refresh
+│     └── 📖 README.md                 ← deep dive on SQLAlchemy CREATE
+│
+├── 📖 A018_READ_Operation_with_Database/
+│     ├── 🐍 main.py                   ← GET /todos + GET /todos/{id}
+│     └── 📖 README.md                 ← deep dive on SQLAlchemy READ
+│
+├── ✏️ A019_UPDATE_Operation_with_Database/
+│     ├── 🐍 main.py                   ← PUT /todos/{id} (mutate + commit)
+│     └── 📖 README.md                 ← deep dive on SQLAlchemy UPDATE
+│
+└── 🗑️ A020_DELETE_Operation_with_Database/
+      ├── 🐍 main.py                   ← DELETE /todos/{id} (db.delete)
+      └── 📖 README.md                 ← deep dive on SQLAlchemy DELETE
 ```
 
 ---
@@ -242,8 +302,23 @@ INFO:     Started reloader process
 | 003 | [`A003_Built_First_FastAPI`](./A003_Built_First_FastAPI/) | 🟢 Beginner | 20 min | Multi-routing, route order, unique handler names |
 | 004 | [`A004_Path_Parameter_Dynamic_Route_Validation`](./A004_Path_Parameter_Dynamic_Route_Validation/) | 🟡 Beginner+ | 30 min | Path params, type-driven validation, 422 errors |
 | 005 | [`A005_Query_Parameters_Optional_Default_Value`](./A005_Query_Parameters_Optional_Default_Value/) | 🟡 Beginner+ | 30 min | Query params, defaults, required vs optional |
+| 006 | [`A006_Request_Body_POST_API_Pydantic_Explained`](./A006_Request_Body_POST_API_Pydantic_Explained/) | 🟡 Beginner+ | 35 min | POST with Pydantic body, `BaseModel`, JSON deserialization |
+| 007 | [`A007_Pydanti_Models_Data_Validation_Nested_Schemas`](./A007_Pydanti_Models_Data_Validation_Nested_Schemas/) | 🟡 Beginner+ | 35 min | Nested Pydantic models, `Optional`, list fields |
+| 008 | [`A008_CRUD_API_TODO_App`](./A008_CRUD_API_TODO_App/) | 🟠 Intermediate | 45 min | Full in-memory CRUD: POST, GET-list, GET-one, PUT, DELETE |
+| 009 | [`A009_Path_Query_Body_Together`](./A009_Path_Query_Body_Together/) | 🟠 Intermediate | 35 min | Combining path + body + query inputs in one endpoint |
+| 010 | [`A010_Response_Models_Data_Validation_Hide_Sensitive_Data`](./A010_Response_Models_Data_Validation_Hide_Sensitive_Data/) | 🟠 Intermediate | 30 min | `response_model=...` to filter sensitive fields |
+| 011 | [`A011_Status_Codes_Custom_Responses_Error_Handling`](./A011_Status_Codes_Custom_Responses_Error_Handling/) | 🟠 Intermediate | 35 min | `201`, `{status, message, data}` envelopes, `HTTPException` 404 |
+| 012 | [`A012_Exception_Handling_HTTPException_Global_Error_Handler`](./A012_Exception_Handling_HTTPException_Global_Error_Handler/) | 🟠 Intermediate | 35 min | Custom exception class + `@app.exception_handler` global 404 |
+| 013 | [`A013_Dependency_Injection_Depends()_Auth_Example`](./A013_Dependency_Injection_Depends()_Auth_Example/) | 🟠 Intermediate | 40 min | `Depends(verify_token)`, `Header`, token-gated routes |
+| 014 | [`A014_Middleware_Explained_Logging_Request_Response_Flow`](./A014_Middleware_Explained_Logging_Request_Response_Flow/) | 🟠 Intermediate | 40 min | `@app.middleware("http")`, request/response timing & logging |
+| 015 | [`A015_SQLite_Database_Integration_Setup_SQLAlchemy_Intro`](./A015_SQLite_Database_Integration_Setup_SQLAlchemy_Intro/) | 🟠 Intermediate | 35 min | Raw `sqlite3` connect/cursor/`CREATE TABLE` (folder name aside) |
+| 016 | [`A016_SQLAlchemy_Setup_Models_Database_Integration`](./A016_SQLAlchemy_Setup_Models_Database_Integration/) | 🟠 Intermediate | 45 min | `create_engine`, `sessionmaker`, `declarative_base`, `get_db` yield dep |
+| 017 | [`A017_CREATE_Operation_with_Database`](./A017_CREATE_Operation_with_Database/) | 🟠 Intermediate | 30 min | `db.add → db.commit → db.refresh` CREATE pattern |
+| 018 | [`A018_READ_Operation_with_Database`](./A018_READ_Operation_with_Database/) | 🟠 Intermediate | 30 min | `db.query(Todo).all()` and `.filter(...).first()`; 404 on missing |
+| 019 | [`A019_UPDATE_Operation_with_Database`](./A019_UPDATE_Operation_with_Database/) | 🟠 Intermediate | 35 min | `PUT` via attribute mutation; SQLAlchemy auto-`UPDATE` on commit |
+| 020 | [`A020_DELETE_Operation_with_Database`](./A020_DELETE_Operation_with_Database/) | 🟠 Intermediate | 30 min | `db.delete(obj) → db.commit`; `204` vs `404`; hard vs soft delete |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001. (A001 is the "synthesis" — read it last.)
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020.
 
 ---
 
