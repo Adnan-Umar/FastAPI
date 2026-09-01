@@ -8,7 +8,7 @@
 ## Repository at a glance
 
 - **Type:** Personal FastAPI tutorial/lab. **Not** a deployable service, **no CI**, **no tests**, **no `pyproject.toml`**.
-- **Layout:** Eleven self-contained module folders (`A001_CrashCourse/` … `A011_Status_Codes_Custom_Responses_Error_Handling/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
+- **Layout:** Twelve self-contained module folders (`A001_CrashCourse/` … `A012_Exception_Handling_HTTPException_Global_Error_Handler/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
 - **Stack:** Python 3.10+, FastAPI 0.141.x, Pydantic v2, Uvicorn. Only A001 has a pinned `requirements.txt`; the rest install via `pip install "fastapi[standard]"`.
 - **Branch:** `main` (default). No protection rules, no PR template.
 
@@ -48,6 +48,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 | A009 | `A009_Path_Query_Body_Together/main.py` | `PUT /users/{user_id}` combining **path + body + query** inputs. |
 | A010 | `A010_Response_Models_Data_Validation_Hide_Sensitive_Data/main.py` | `response_model=UserResponse` filters out `password` from a `User` return. |
 | A011 | `A011_Status_Codes_Custom_Responses_Error_Handling/main.py` | Status codes (`201`), custom `{status, message, data}` responses, and `HTTPException` for `404`. |
+| A012 | `A012_Exception_Handling_HTTPException_Global_Error_Handler/main.py` | Custom `UserNotFoundException` + `@app.exception_handler(...)` for a centralized 404 response. |
 
 ---
 
@@ -63,7 +64,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 11 existing modules (A001–A011) have a deep, memory-friendly README using mnemonics and a "If you remember ONE thing" section. **Match this style** if you add or update one.
+- **Per-folder `README.md`:** All 12 existing modules (A001–A012) have a deep, memory-friendly README using mnemonics and a "If you remember ONE thing" section. **Match this style** if you add or update one.
 - **Pinned versions:** A001 is the only folder with a `requirements.txt`. New modules can either omit it (use `fastapi[standard]`) or add one.
 
 ---
@@ -133,7 +134,7 @@ If the user asks for any of these, treat it as a *new feature*, not as something
 
 If you only have 30 seconds:
 
-- **11 independent FastAPI mini-projects** under `A001…A011/`.
+- **12 independent FastAPI mini-projects** under `A001…A012/`.
 - **One app per folder**, run with `uvicorn main:app --reload` from inside that folder.
 - **No tests, no CI, no linter, no build system** — just `pip install "fastapi[standard]"` and go.
 - **README style is mnemonic-heavy** — keep the style consistent.
