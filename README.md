@@ -418,7 +418,41 @@ INFO:     Started reloader process
 
 > 💡 **This is the first deployed module.** Each subsequent module can be deployed the same way — see the A033 README for the exact Render setup steps.
 
-🎯 **The FastAPI Learning Path is now complete.** All 33 modules (A001–A033) — including this live, deployed example — are fully documented with mnemonics, theory, and interview Q&A.
+---
+
+## 🏗️ Capstone Project — Blog API
+
+In addition to the tutorial modules, the repo includes a **real-world Blog API** that integrates everything learned across A001–A033:
+
+| Feature | Implementation | Tutorial modules |
+|:--------|:---------------|:-----------------|
+| FastAPI routes + CRUD | `main.py` | A001, A002, A008 |
+| SQLAlchemy models + session | `database.py`, `models.py` | A016–A020 |
+| Pydantic schemas + response filtering | `schemas.py` | A006, A007, A010 |
+| JWT auth (login + Bearer) | `auth.py` | A022, A023 |
+| `.env` config | `config.py` | A026 |
+
+<br/>
+
+```
+📦 FastAPI/
+├── 📚 A001_CrashCourse/ … A033_Deploy_Project_on_Render_GitHub_Live_API/  ← 33 tutorial modules
+└── 🏗️ Blog_API/
+      ├── 🐍 main.py         ← full CRUD blog with JWT-protected routes
+      ├── 🔐 auth.py          ← JWT create + verify (python-jose)
+      ├── ⚙️ config.py        ← Settings from .env (python-dotenv)
+      ├── 🗄️ database.py       ← SQLAlchemy engine + session
+      ├── 🧱 models.py         ← Blog ORM model
+      ├── 📋 schemas.py        ← BlogCreate + BlogResponse
+      ├── 📄 .env             ← real DB_URL + SECRET_KEY (git-ignored)
+      ├── 📑 .env.example      ← template (tracked)
+      ├── 📦 requirements.txt ← pinned deps
+      └── 📖 README.md         ← quick start + API reference
+```
+
+> 🚀 The Blog API is a deployable, production-structured FastAPI application. The tutorial modules (A001–A033) show how each piece of it is built, one concept at a time.
+
+🎯 **The FastAPI Learning Path is now complete.** All 33 modules (A001–A033) — including the live Render deployment — are fully documented with mnemonics, theory, and interview Q&As. The `Blog_API/` capstone integrates every concept.
 
 > 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031 → A032 → A033.
 
