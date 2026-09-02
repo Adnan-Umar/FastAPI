@@ -8,7 +8,7 @@
 ## Repository at a glance
 
 - **Type:** Personal FastAPI tutorial/lab. **Not** a deployable service, **no CI**, **no tests**, **no `pyproject.toml``.
-- **Layout:** Nineteen self-contained module folders (`A001_CrashCourse/` … `A019_UPDATE_Operation_with_Database/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
+- **Layout:** Twenty-one self-contained module folders (`A001_CrashCourse/` … `A021_Async_Await_Explained_Async_Programming/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
 - **Stack:** Python 3.10+, FastAPI 0.141.x, Pydantic v2, Uvicorn. Only A001 has a pinned `requirements.txt`; the rest install via `pip install "fastapi[standard]"`.
 - **Branch:** `main` (default). No protection rules, no PR template.
 
@@ -56,6 +56,8 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 | A017 | `A017_CREATE_Operation_with_Database/main.py` | `POST /todos` with `db.add → db.commit → db.refresh` pattern. **`title` is taken as a query param, not a JSON body** (not idiomatic; see README for the Pydantic-body fix). |
 | A018 | `A018_READ_Operation_with_Database/main.py` | `GET /todos` (list) + `GET /todos/{id}` (one) with `db.query(Todo).all()` and `.filter(...).first()`. **Throws 404 on missing id.** |
 | A019 | `A019_UPDATE_Operation_with_Database/main.py` | `PUT /todos/{todo_id}` — query, mutate `todo.title`, `db.commit()`. **Throws 404 on missing id.** |
+| A020 | `A020_DELETE_Operation_with_Database/main.py` | `DELETE /todos/{todo_id}` — query, `db.delete(todo)`, `db.commit()`. **Throws 404 on missing id.** |
+| A021 | `A021_Async_Await_Explained_Async_Programming/main.py` | `GET /` as `async def` with `await asyncio.sleep(3)` — demonstrates non-blocking yield to the event loop. |
 
 ---
 
@@ -71,7 +73,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 19 existing modules (A001–A019) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
+- **Per-folder `README.md`:** All 21 existing modules (A001–A021) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
 - **Interview Q&A convention:** Every module README ends with an `## 🎯 Interview Q&A` section containing **8 questions** (one per common interview topic for that module). Each answer follows the pattern: short prose answer + comparison table where useful + a "One-liner" summary. If you add a new module, write 8 Q&A items in the same style.
 - **Diagrams:** ASCII art and Mermaid diagrams are encouraged wherever a flow, hierarchy, or sequence helps comprehension. They are first-class content, not decoration.
 - **Theory depth:** READMEs must be **deeply detailed** — cover minor topics, edge cases, and gotchas in full, not just the happy path. The user values thoroughness over brevity. Add comparison tables, error/edge-case examples, and "what's happening under the hood" walkthroughs wherever they apply. Don't summarize when you can explain.
@@ -144,7 +146,7 @@ If the user asks for any of these, treat it as a *new feature*, not as something
 
 If you only have 30 seconds:
 
-- **19 independent FastAPI mini-projects** under `A001…A019/`.
+- **21 independent FastAPI mini-projects** under `A001…A021/`.
 - **One app per folder**, run with `uvicorn main:app --reload` from inside that folder.
 - **No tests, no CI, no linter, no build system** — just `pip install "fastapi[standard]"` and go.
 - **README style is mnemonic-heavy** — keep the style consistent.
