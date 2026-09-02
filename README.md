@@ -247,6 +247,11 @@ flowchart LR
       ├── 🐍 main.py                   ← login → JWT, verify gate on /secure
       ├── 📦 requirements.txt          ← fastapi[standard] + python-jose
       └── 📖 README.md                 ← deep dive on JWT auth
+│
+└── 🛡️ A023_OAuth2_JWT_Authentication_Secure_Routes_Password_Hashing/
+      ├── 🐍 main.py                   ← OAuth2 form login + hashed passwords
+      ├── 📦 requirements.txt          ← fastapi[standard] + python-jose + passlib
+      └── 📖 README.md                 ← deep dive on OAuth2 + JWT + hashing
 ```
 
 ---
@@ -328,8 +333,9 @@ INFO:     Started reloader process
 | 020 | [`A020_DELETE_Operation_with_Database`](./A020_DELETE_Operation_with_Database/) | 🟠 Intermediate | 30 min | `db.delete(obj) → db.commit`; `204` vs `404`; hard vs soft delete |
 | 021 | [`A021_Async_Await_Explained_Async_Programming`](./A021_Async_Await_Explained_Async_Programming/) | 🟠 Intermediate | 30 min | `async def` + `await asyncio.sleep()`; event loop, coroutines, `gather` |
 | 022 | [`A022_JWT_Authentication_Token_Based_Auth_Login_API`](./A022_JWT_Authentication_Token_Based_Auth_Login_API/) | 🟠 Intermediate | 45 min | `POST /login` → `jwt.encode` (HS256); `GET /secure` gated by `Depends(verify_token)`; 401 on bad/expired |
+| 023 | [`A023_OAuth2_JWT_Authentication_Secure_Routes_Password_Hashing`](./A023_OAuth2_JWT_Authentication_Secure_Routes_Password_Hashing/) | 🟠 Intermediate | 50 min | `OAuth2PasswordRequestForm` (form body) + `passlib` hashing + `Authorization: Bearer …`; Swagger Authorize button |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023.
 
 ---
 
