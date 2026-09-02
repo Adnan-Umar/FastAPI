@@ -302,6 +302,11 @@ flowchart LR
       ├── 🐍 main.py                   ← GET /news with 60s TTL cache
       ├── 📦 requirements.txt          ← fastapi[standard] + requests + beautifulsoup4
       └── 📖 README.md                 ← deep dive on TTL caching + cache-aside
+│
+└── 🚦 A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse/
+      ├── 🐍 main.py                   ← GET /data capped at 5/minute/IP
+      ├── 📦 requirements.txt          ← fastapi[standard] + slowapi
+      └── 📖 README.md                 ← deep dive on rate limiting + 429
 ```
 
 ---
@@ -392,8 +397,11 @@ INFO:     Started reloader process
 | 029 | [`A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data`](./A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data/) | 🟡 Beginner+ | 35 min | `GET /news` crawls `indianexpress.com` via `requests`, parses with `BeautifulSoup`, extracts headlines with `find_all` |
 | 030 | [`A030_Pagination_Explained_Limit_Real_API_Example`](./A030_Pagination_Explained_Limit_Real_API_Example/) | 🟡 Beginner+ | 40 min | `GET /news` crawls `news.ycombinator.com`, extracts titles, slices with `page`/`limit` query params; returns `{page, limit, total, data}` |
 | 031 | [`A031_Caching_Explained_TTL_Boost_API_Performancec`](./A031_Caching_Explained_TTL_Boost_API_Performancec/) | 🟡 Beginner+ | 40 min | `GET /news` caches HN titles for 60s TTL; returns `{time_taken, data}`; cache-aside pattern |
+| 032 | [`A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse`](./A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse/) | 🟡 Beginner+ | 35 min | `GET /data` capped at 5/minute per IP via `@limiter.limit("5/minute")`; custom `429` handler; `app.state.limiter` wiring |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031 → A032.
+
+🎯 **The FastAPI Learning Path is now COMPLETE.** All 32 modules (A001–A032) have fully documented, commented, tested `main.py` files and deep-dive READMEs with mnemonics, theory, and interview Q&A.
 
 ---
 
