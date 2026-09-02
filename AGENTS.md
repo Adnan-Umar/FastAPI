@@ -8,7 +8,7 @@
 ## Repository at a glance
 
 - **Type:** Personal FastAPI tutorial/lab. **Not** a deployable service, **no CI**, **no tests**, **no `pyproject.toml``.
-- **Layout:** Thirty-two self-contained module folders (`A001_CrashCourse/` … `A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
+- **Layout:** Thirty-three self-contained module folders (`A001_CrashCourse/` … `A033_Deploy_Project_on_Render_GitHub_Live_API/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
 - **Stack:** Python 3.10+, FastAPI 0.141.x, Pydantic v2, Uvicorn. Only A001 has a pinned `requirements.txt`; the rest install via `pip install "fastapi[standard]"`.
 - **Branch:** `main` (default). No protection rules, no PR template.
 
@@ -69,6 +69,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 | A030 | `A030_Pagination_Explained_Limit_Real_API_Example/main.py` | `GET /news` crawls `news.ycombinator.com`, extracts titles, slices with `page`/`limit` query params. Returns `{page, limit, total, data}`. **Requires `pip install requests beautifulsoup4`.** |
 | A031 | `A031_Caching_Explained_TTL_Boost_API_Performancec/main.py` | `GET /news` fetches HN via requests+BeautifulSoup, caches all titles in a module-level `cache_data` var for 60s TTL, returns `{time_taken, data}` so the cache-vs-fresh speedup is visible. **Requires `pip install requests beautifulsoup4`.** |
 | A032 | `A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse/main.py` | `GET /data` rate-limited to 5/minute per IP via `@limiter.limit("5/minute")`; custom `429` handler for `RateLimitExceeded`. **Requires `pip install slowapi`** (not in `fastapi[standard]`). |
+| A033 | `A033_Deploy_Project_on_Render_GitHub_Live_API/main.py` | Minimal `GET /` app; deployable to Render via `requirements.txt` + `uvicorn main:app --host 0.0.0.0 --port $PORT`. Live at `https://fastapi-ymyy.onrender.com`. |
 
 ---
 
@@ -84,7 +85,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 32 existing modules (A001–A032) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
+- **Per-folder `README.md`:** All 33 existing modules (A001–A033) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
 - **Interview Q&A convention:** Every module README ends with an `## 🎯 Interview Q&A` section containing **8 questions** (one per common interview topic for that module). Each answer follows the pattern: short prose answer + comparison table where useful + a "One-liner" summary. If you add a new module, write 8 Q&A items in the same style.
 - **Diagrams:** ASCII art and Mermaid diagrams are encouraged wherever a flow, hierarchy, or sequence helps comprehension. They are first-class content, not decoration.
 - **Theory depth:** READMEs must be **deeply detailed** — cover minor topics, edge cases, and gotchas in full, not just the happy path. The user values thoroughness over brevity. Add comparison tables, error/edge-case examples, and "what's happening under the hood" walkthroughs wherever they apply. Don't summarize when you can explain.
@@ -157,7 +158,7 @@ If the user asks for any of these, treat it as a *new feature*, not as something
 
 If you only have 30 seconds:
 
-- **32 independent FastAPI mini-projects** under `A001…A032/`.
+- **33 independent FastAPI mini-projects** under `A001…A033/`.
 - **One app per folder**, run with `uvicorn main:app --reload` from inside that folder.
 - **No tests, no CI, no linter, no build system** — just `pip install "fastapi[standard]"` and go.
 - **README style is mnemonic-heavy** — keep the style consistent.

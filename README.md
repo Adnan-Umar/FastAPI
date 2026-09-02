@@ -307,6 +307,13 @@ flowchart LR
       ├── 🐍 main.py                   ← GET /data capped at 5/minute/IP
       ├── 📦 requirements.txt          ← fastapi[standard] + slowapi
       └── 📖 README.md                 ← deep dive on rate limiting + 429
+│
+└── 🚀 A033_Deploy_Project_on_Render_GitHub_Live_API/
+      ├── 🐍 main.py                   ← GET / → Hello from FastAPI
+      ├── 📦 requirements.txt          ← pinned deps (fastapi 0.141.1, uvicorn 0.52.4)
+      ├── 📄 .env                      ← local secrets (git-ignored)
+      └── 📖 README.md                 ← deep dive on Render deployment
+        │                              Live: https://fastapi-ymyy.onrender.com
 ```
 
 ---
@@ -398,10 +405,22 @@ INFO:     Started reloader process
 | 030 | [`A030_Pagination_Explained_Limit_Real_API_Example`](./A030_Pagination_Explained_Limit_Real_API_Example/) | 🟡 Beginner+ | 40 min | `GET /news` crawls `news.ycombinator.com`, extracts titles, slices with `page`/`limit` query params; returns `{page, limit, total, data}` |
 | 031 | [`A031_Caching_Explained_TTL_Boost_API_Performancec`](./A031_Caching_Explained_TTL_Boost_API_Performancec/) | 🟡 Beginner+ | 40 min | `GET /news` caches HN titles for 60s TTL; returns `{time_taken, data}`; cache-aside pattern |
 | 032 | [`A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse`](./A032_Rate_Limiting_slowapi_Protect_Your_APIs_from_Abuse/) | 🟡 Beginner+ | 35 min | `GET /data` capped at 5/minute per IP via `@limiter.limit("5/minute")`; custom `429` handler; `app.state.limiter` wiring |
+| 033 | [`A033_Deploy_Project_on_Render_GitHub_Live_API`](./A033_Deploy_Project_on_Render_GitHub_Live_API/) | 🟡 Beginner+ | 25 min | Minimal `GET /` app deployed live on Render at `https://fastapi-ymyy.onrender.com`; `uvicorn main:app --host 0.0.0.0 --port $PORT` |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031 → A032.
+---
 
-🎯 **The FastAPI Learning Path is now COMPLETE.** All 32 modules (A001–A032) have fully documented, commented, tested `main.py` files and deep-dive READMEs with mnemonics, theory, and interview Q&A.
+## 🌐 Live Deployments
+
+| Module | Live URL | Status |
+|:-------|:---------|:-------|
+| A033 | [https://fastapi-ymyy.onrender.com](https://fastapi-ymyy.onrender.com) | ✅ Live |
+| A033 `/docs` | [https://fastapi-ymyy.onrender.com/docs](https://fastapi-ymyy.onrender.com/docs) | ✅ Swagger UI |
+
+> 💡 **This is the first deployed module.** Each subsequent module can be deployed the same way — see the A033 README for the exact Render setup steps.
+
+🎯 **The FastAPI Learning Path is now complete.** All 33 modules (A001–A033) — including this live, deployed example — are fully documented with mnemonics, theory, and interview Q&A.
+
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031 → A032 → A033.
 
 ---
 
