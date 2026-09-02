@@ -268,6 +268,14 @@ flowchart LR
       │     ├── 📁 src/                ← App.jsx, api.js, main.jsx
       │     └── 📖 README.md
       └── 📖 README.md                 ← deep dive on CORS + React
+│
+└── 🔐 A026_Environment_Variables_env_Setup_python_dotenv/
+      ├── 🐍 main.py                   ← FastAPI + CORS from settings
+      ├── ⚙️ config.py                 ← Settings class (loads .env)
+      ├── 📄 .env                      ← ACTUAL secrets (git-ignored)
+      ├── 📑 .env.example              ← template (tracked in git)
+      ├── 📦 requirements.txt          ← fastapi[standard] + python-dotenv
+      └── 📖 README.md                 ← deep dive on env vars
 ```
 
 ---
@@ -352,8 +360,9 @@ INFO:     Started reloader process
 | 023 | [`A023_OAuth2_JWT_Authentication_Secure_Routes_Password_Hashing`](./A023_OAuth2_JWT_Authentication_Secure_Routes_Password_Hashing/) | 🟠 Intermediate | 50 min | `OAuth2PasswordRequestForm` (form body) + `passlib` hashing + `Authorization: Bearer …`; Swagger Authorize button |
 | 024 | [`A024_File_Upload_Serve_Static_Files_(Images_PDFs)`](./A024_File_Upload_Serve_Static_Files_(Images_PDFs)/) | 🟠 Intermediate | 40 min | `POST /upload` (multipart) + `StaticFiles` mount; extension whitelist + path-traversal guard |
 | 025 | [`A025_CORS_Explained_Connect_React_with_FastAPI`](./A025_CORS_Explained_Connect_React_with_FastAPI/) | 🟠 Intermediate | 45 min | `CORSMiddleware` + Vite/React 18 frontend; preflight, `localhost` vs `127.0.0.1`, credentials |
+| 026 | [`A026_Environment_Variables_env_Setup_python_dotenv`](./A026_Environment_Variables_env_Setup_python_dotenv/) | 🟢 Beginner+ | 35 min | `python-dotenv` + `Settings` class; CORS origins / `SECRET_KEY` / `DB_URL` from `.env`; `.env.example` template; non-sensitive `/config` endpoint |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026.
 
 ---
 
