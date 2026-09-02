@@ -276,6 +276,12 @@ flowchart LR
       ├── 📑 .env.example              ← template (tracked in git)
       ├── 📦 requirements.txt          ← fastapi[standard] + python-dotenv
       └── 📖 README.md                 ← deep dive on env vars
+│
+└── 🧪 A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/
+      ├── 🐍 main.py                   ← 2 routes to test
+      ├── 🧪 test_main.py              ← 3 tests via TestClient
+      ├── 📦 requirements.txt          ← fastapi[standard] + pytest + httpx
+      └── 📖 README.md                 ← deep dive on pytest + TestClient
 ```
 
 ---
@@ -361,8 +367,9 @@ INFO:     Started reloader process
 | 024 | [`A024_File_Upload_Serve_Static_Files_(Images_PDFs)`](./A024_File_Upload_Serve_Static_Files_(Images_PDFs)/) | 🟠 Intermediate | 40 min | `POST /upload` (multipart) + `StaticFiles` mount; extension whitelist + path-traversal guard |
 | 025 | [`A025_CORS_Explained_Connect_React_with_FastAPI`](./A025_CORS_Explained_Connect_React_with_FastAPI/) | 🟠 Intermediate | 45 min | `CORSMiddleware` + Vite/React 18 frontend; preflight, `localhost` vs `127.0.0.1`, credentials |
 | 026 | [`A026_Environment_Variables_env_Setup_python_dotenv`](./A026_Environment_Variables_env_Setup_python_dotenv/) | 🟢 Beginner+ | 35 min | `python-dotenv` + `Settings` class; CORS origins / `SECRET_KEY` / `DB_URL` from `.env`; `.env.example` template; non-sensitive `/config` endpoint |
+| 027 | [`A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints`](./A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/) | 🟡 Beginner+ | 30 min | `TestClient(app)` + `pytest`; tests `GET /` and `GET /add`, asserts status + JSON body + 422 on bad input |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027.
 
 ---
 
