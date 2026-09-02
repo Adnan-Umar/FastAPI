@@ -287,6 +287,16 @@ flowchart LR
       ├── 🐍 main.py                   ← proxy /posts → jsonplaceholder
       ├── 📦 requirements.txt          ← fastapi[standard] + requests
       └── 📖 README.md                 ← deep dive on third-party API integration
+│
+└── 🕷️ A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data/
+      ├── 🐍 main.py                   ← GET /news scrapes indianexpress.com
+      ├── 📦 requirements.txt          ← fastapi[standard] + requests + beautifulsoup4
+      └── 📖 README.md                 ← deep dive on web scraping with BeautifulSoup
+│
+└── 📄 A030_Pagination_Explained_Limit_Real_API_Example/
+      ├── 🐍 main.py                   ← GET /news crawls HN + paginates
+      ├── 📦 requirements.txt          ← fastapi[standard] + requests + beautifulsoup4
+      └── 📖 README.md                 ← deep dive on offset-limit pagination
 ```
 
 ---
@@ -374,8 +384,10 @@ INFO:     Started reloader process
 | 026 | [`A026_Environment_Variables_env_Setup_python_dotenv`](./A026_Environment_Variables_env_Setup_python_dotenv/) | 🟢 Beginner+ | 35 min | `python-dotenv` + `Settings` class; CORS origins / `SECRET_KEY` / `DB_URL` from `.env`; `.env.example` template; non-sensitive `/config` endpoint |
 | 027 | [`A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints`](./A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/) | 🟡 Beginner+ | 30 min | `TestClient(app)` + `pytest`; tests `GET /` and `GET /add`, asserts status + JSON body + 422 on bad input |
 | 028 | [`A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data`](./A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/) | 🟡 Beginner+ | 40 min | Proxy routes (`GET /posts`, `GET /posts/{post_id}`) that call `jsonplaceholder` via `requests`; translates upstream errors into `HTTPException`s |
+| 029 | [`A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data`](./A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data/) | 🟡 Beginner+ | 35 min | `GET /news` crawls `indianexpress.com` via `requests`, parses with `BeautifulSoup`, extracts headlines with `find_all` |
+| 030 | [`A030_Pagination_Explained_Limit_Real_API_Example`](./A030_Pagination_Explained_Limit_Real_API_Example/) | 🟡 Beginner+ | 40 min | `GET /news` crawls `news.ycombinator.com`, extracts titles, slices with `page`/`limit` query params; returns `{page, limit, total, data}` |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030.
 
 ---
 
