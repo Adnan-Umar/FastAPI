@@ -282,6 +282,11 @@ flowchart LR
       ├── 🧪 test_main.py              ← 3 tests via TestClient
       ├── 📦 requirements.txt          ← fastapi[standard] + pytest + httpx
       └── 📖 README.md                 ← deep dive on pytest + TestClient
+│
+└── 🔌 A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/
+      ├── 🐍 main.py                   ← proxy /posts → jsonplaceholder
+      ├── 📦 requirements.txt          ← fastapi[standard] + requests
+      └── 📖 README.md                 ← deep dive on third-party API integration
 ```
 
 ---
@@ -368,8 +373,9 @@ INFO:     Started reloader process
 | 025 | [`A025_CORS_Explained_Connect_React_with_FastAPI`](./A025_CORS_Explained_Connect_React_with_FastAPI/) | 🟠 Intermediate | 45 min | `CORSMiddleware` + Vite/React 18 frontend; preflight, `localhost` vs `127.0.0.1`, credentials |
 | 026 | [`A026_Environment_Variables_env_Setup_python_dotenv`](./A026_Environment_Variables_env_Setup_python_dotenv/) | 🟢 Beginner+ | 35 min | `python-dotenv` + `Settings` class; CORS origins / `SECRET_KEY` / `DB_URL` from `.env`; `.env.example` template; non-sensitive `/config` endpoint |
 | 027 | [`A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints`](./A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/) | 🟡 Beginner+ | 30 min | `TestClient(app)` + `pytest`; tests `GET /` and `GET /add`, asserts status + JSON body + 422 on bad input |
+| 028 | [`A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data`](./A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/) | 🟡 Beginner+ | 40 min | Proxy routes (`GET /posts`, `GET /posts/{post_id}`) that call `jsonplaceholder` via `requests`; translates upstream errors into `HTTPException`s |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028.
 
 ---
 

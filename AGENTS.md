@@ -8,7 +8,7 @@
 ## Repository at a glance
 
 - **Type:** Personal FastAPI tutorial/lab. **Not** a deployable service, **no CI**, **no tests**, **no `pyproject.toml``.
-- **Layout:** Twenty-seven self-contained module folders (`A001_CrashCourse/` … `A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
+- **Layout:** Twenty-eight self-contained module folders (`A001_CrashCourse/` … `A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/`). Each is an *independent* mini-project with its own `main.py` (and optionally `README.md`, `requirements.txt`).
 - **Stack:** Python 3.10+, FastAPI 0.141.x, Pydantic v2, Uvicorn. Only A001 has a pinned `requirements.txt`; the rest install via `pip install "fastapi[standard]"`.
 - **Branch:** `main` (default). No protection rules, no PR template.
 
@@ -64,6 +64,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 | A025 | `A025_CORS_Explained_Connect_React_with_FastAPI/main.py` | `CORSMiddleware` allowing `http://localhost:5173`; `GET /`, `GET /todos`, `POST /todos`. Paired with a Vite + React 18 frontend in `frontend/`. |
 | A026 | `A026_Environment_Variables_env_Setup_python_dotenv/main.py` | `Settings` class loading `.env` via `python-dotenv`; CORS origins + JWT secret + DB URL from env; non-sensitive `/config` endpoint. **Requires `pip install python-dotenv`.** |
 | A027 | `A027_API_Testing_with_Pytest_FastAPI_Test_Endpoints/main.py` | `TestClient(app)` + `pytest`; tests `GET /` and `GET /add`. **Requires `pip install pytest httpx`.** |
+| A028 | `A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/main.py` | Proxy routes (`GET /posts`, `GET /posts/{post_id}`) that call `jsonplaceholder` via `requests`; translates upstream errors into `HTTPException`s. **Requires `pip install requests`.** |
 
 ---
 
@@ -79,7 +80,7 @@ There is **no root-level `requirements.txt`** — each module that needs one has
 
 - **Naming:** Folder names use a single `A0NN_<Topic>` prefix. Match this when adding a new module.
 - **Per-folder `main.py`:** Always the FastAPI app. Keep it that way — don't introduce `app.py` or `server.py`.
-- **Per-folder `README.md`:** All 27 existing modules (A001–A027) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
+- **Per-folder `README.md`:** All 28 existing modules (A001–A028) have a deep, memory-friendly README using mnemonics, a "If you remember ONE thing" section, and an "Interview Q&A" section (8 questions per module). **Match this style** if you add or update one.
 - **Interview Q&A convention:** Every module README ends with an `## 🎯 Interview Q&A` section containing **8 questions** (one per common interview topic for that module). Each answer follows the pattern: short prose answer + comparison table where useful + a "One-liner" summary. If you add a new module, write 8 Q&A items in the same style.
 - **Diagrams:** ASCII art and Mermaid diagrams are encouraged wherever a flow, hierarchy, or sequence helps comprehension. They are first-class content, not decoration.
 - **Theory depth:** READMEs must be **deeply detailed** — cover minor topics, edge cases, and gotchas in full, not just the happy path. The user values thoroughness over brevity. Add comparison tables, error/edge-case examples, and "what's happening under the hood" walkthroughs wherever they apply. Don't summarize when you can explain.
@@ -152,7 +153,7 @@ If the user asks for any of these, treat it as a *new feature*, not as something
 
 If you only have 30 seconds:
 
-- **27 independent FastAPI mini-projects** under `A001…A027/`.
+- **28 independent FastAPI mini-projects** under `A001…A028/`.
 - **One app per folder**, run with `uvicorn main:app --reload` from inside that folder.
 - **No tests, no CI, no linter, no build system** — just `pip install "fastapi[standard]"` and go.
 - **README style is mnemonic-heavy** — keep the style consistent.
