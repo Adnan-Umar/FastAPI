@@ -297,6 +297,11 @@ flowchart LR
       ├── 🐍 main.py                   ← GET /news crawls HN + paginates
       ├── 📦 requirements.txt          ← fastapi[standard] + requests + beautifulsoup4
       └── 📖 README.md                 ← deep dive on offset-limit pagination
+│
+└── ⏳ A031_Caching_Explained_TTL_Boost_API_Performancec/
+      ├── 🐍 main.py                   ← GET /news with 60s TTL cache
+      ├── 📦 requirements.txt          ← fastapi[standard] + requests + beautifulsoup4
+      └── 📖 README.md                 ← deep dive on TTL caching + cache-aside
 ```
 
 ---
@@ -386,8 +391,9 @@ INFO:     Started reloader process
 | 028 | [`A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data`](./A028_Third_Party_API_Integration_Requests_Library_Fetch_External_Data/) | 🟡 Beginner+ | 40 min | Proxy routes (`GET /posts`, `GET /posts/{post_id}`) that call `jsonplaceholder` via `requests`; translates upstream errors into `HTTPException`s |
 | 029 | [`A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data`](./A029_Web_Crawling_Requests_BeautifulSoup_Fetch_Website_Data/) | 🟡 Beginner+ | 35 min | `GET /news` crawls `indianexpress.com` via `requests`, parses with `BeautifulSoup`, extracts headlines with `find_all` |
 | 030 | [`A030_Pagination_Explained_Limit_Real_API_Example`](./A030_Pagination_Explained_Limit_Real_API_Example/) | 🟡 Beginner+ | 40 min | `GET /news` crawls `news.ycombinator.com`, extracts titles, slices with `page`/`limit` query params; returns `{page, limit, total, data}` |
+| 031 | [`A031_Caching_Explained_TTL_Boost_API_Performancec`](./A031_Caching_Explained_TTL_Boost_API_Performancec/) | 🟡 Beginner+ | 40 min | `GET /news` caches HN titles for 60s TTL; returns `{time_taken, data}`; cache-aside pattern |
 
-> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030.
+> 💡 **Recommended path:** A002 → A003 → A004 → A005 → A001 → A006 → A007 → A008 → A009 → A010 → A011 → A012 → A013 → A014 → A015 → A016 → A017 → A018 → A019 → A020 → A021 → A022 → A023 → A024 → A025 → A026 → A027 → A028 → A029 → A030 → A031.
 
 ---
 
