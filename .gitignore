@@ -134,3 +134,10 @@ $RECYCLE.BIN/
 #   - README.md
 #   - requirements.txt (if present)
 # Anything else (caches, editor state) → ignored.
+
+node_modules/
+dist/
+.vite/
+*.log
+.env
+.env.local
