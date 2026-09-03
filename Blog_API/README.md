@@ -47,13 +47,21 @@ Then open:
 |:------:|:---------|:----:|:--------------|:--------|
 | 🟢 GET | `/` | none | — | `"Blog API Started"` |
 | 🟡 POST | `/login` | none | — | `{access_token, token_type: "bearer"}` |
-| 🟢 GET | `/blogs` | none | — | `[BlogResponse]` |
+| 🟢 GET | `/blogs` | none | `?page=1&limit=5&search=` | `BlogListResponse` (paginated) |
 | 🟢 GET | `/blogs/{id}` | none | `id: int` | `BlogResponse` or 404 |
 | 🔒 POST | `/blogs` | `Authorization: Bearer <token>` | `BlogCreate` JSON | `BlogResponse` |
 | 🔒 PUT | `/blogs/{id}` | `Authorization: Bearer <token>` | `BlogCreate` JSON | `BlogResponse` or 404 |
 | 🔒 DELETE | `/blogs/{id}` | `Authorization: Bearer <token>` | — | `{"message": "Blog deleted Successfully"}` |
 
 > 🔒 = requires a valid JWT (`Authorization: Bearer <token>` header).
+>
+> ### `GET /blogs` query parameters
+>
+> | Param | Type | Default | Notes |
+> |:------|:-----|:--------|:------|
+> | `page` | int | `1` | Which page of results |
+> | `limit` | int | `5` | Items per page |
+> | `search` | str | `""` | Substring filter on `title` (case-insensitive, via SQL `LIKE`)
 
 ---
 
@@ -86,18 +94,37 @@ Then open:
 ## 🧪 Try it (curl)
 
 ```bash
-# 1. Create a blog (no auth required to read, but write needs a token)
-curl -X POST http://127.0.0.1:8000/login
-# → {"access_token":"<jwt>","token_type":"bearer"}
+# 1. Fetch the JWT
+TOKEN=$(curl -s -X POST http://127.0.0.1:8000/login | jq -r .access_token)
 
-# 2. Create a blog (with token)
+# 2. Create a blog post
 curl -X POST http://127.0.0.1:8000/blogs \
-  -H "Authorization: Bearer <jwt>" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"title":"My first post","content":"Hello world"}'
 
-# 3. Read all blogs
-curl http://127.0.0.1:8000/blogs
+# 3. Read (paginated) — page 1, 5 per page
+curl "http://127.0.0.1:8000/blogs?page=1&limit=5"
+
+# 4. Read (search) — only posts whose title contains "first"
+curl "http://127.0.0.1:8000/blogs?search=first"
+
+# 5. Read a single post
+curl http://127.0.0.1:8000/blogs/1
+```
+
+### `GET /blogs` response shape
+
+```json
+{
+  "page": 1,
+  "limit": 5,
+  "total": 42,
+  "data": [
+    {"id": 1, "title": "My first post", "content": "Hello world"},
+    {"id": 2, "title": "Another post", "content": "..."}
+  ]
+}
 ```
 
 ---

@@ -46,7 +46,7 @@ def create_blog(blog: schemas.BlogCreate, db:Session = Depends(get_db), user = D
     return new_blog
 
 # Read all blogs
-@app.get("/blogs", response_model=list[schemas.BlogResponse])
+@app.get("/blogs", response_model=schemas.BlogListResponse)
 def get_blogs(page: int = 1,
              limit: int = 5,
              search: str = Query(default=""),
@@ -54,7 +54,7 @@ def get_blogs(page: int = 1,
     query = db.query(models.Blog)
 
     if search:
-        query = query.filter(models.Blog.title.like(f"%{search}"))
+        query = query.filter(models.Blog.title.like(f"%{search}%"))
 
     total = query.count()
     start = (page - 1) * limit
